@@ -44,6 +44,13 @@ The content is organized as follows:
 </file_summary>
 
 <directory_structure>
+geminiTasks.md
+memory-bank/activeContext.md
+memory-bank/productContext.md
+memory-bank/progress.md
+memory-bank/projectbrief.md
+memory-bank/systemPatterns.md
+memory-bank/techContext.md
 package.json
 prisma/schema.prisma
 projectPlan/mvp.md
@@ -60,6 +67,366 @@ src/lib/stores/characterInProgressStore.ts
 
 <files>
 This section contains the contents of the repository's files.
+
+<file path="geminiTasks.md">
+# DC20 Character Creator MVP - Planning Refinement Tasks
+
+This document outlines tasks to refine existing planning documents (`mvp.md`, `stage1.md`, `stage2.md`) and detail the content of new files, ensuring consistency, detail for development, and accuracy against the DC20 Beta 0.9.5 rulebook.
+
+## I. Refinements for `mvp.md`
+
+*   [x] Clarify the MVP Wizard Scope: Detail the planned 6-stage re-ordered flow, explicitly stating the initial focus on Stages A (Attributes), B (Ancestry), and C (Class).
+*   [x] Detail the fields for the `CharacterSheetData` Prisma model: Based on the required outputs for a Level 1 character sheet, list the specific fields, their intended data types, and purpose within the model.
+*   [x] Specify the role of `src/lib/rulesdata/types.ts`: State that this file will define detailed TypeScript interfaces for static rule data. List the key interface names to be created: `IAttributeData`, `ITraitEffect`, `ITrait`, `IAncestry`, `IClassFeatureChoiceOption`, `IClassFeatureChoice`, `IClassFeature`, `IClassDefinition`, `ISkillData`, `ITradeData`, `ILanguageData`.
+
+## II. Refinements for `stage1.md` (Stage A - Attributes)
+
+*   [x] Clarify `getModifier(attributeScore)` logic: Explain that in DC20, the attribute score *is* the modifier. Detail how the function should handle null or undefined input values gracefully.
+*   [x] Specify `L1_COMBAT_MASTERY` constant: Define the source and exact value for this constant, referencing the DC20 rulebook.
+*   [x] Populate attribute descriptions: Add a task to copy the descriptions for the four core attributes directly from the DC20 Beta 0.9.5 rulebook (p. 9).
+*   [x] Clarify "Points Spent" calculation for Point Buy: Detail the calculation, explaining that the total points available are 12, derived from a base of -2 for each of the four attributes (4 * -2 = -8 base, + 20 points to spend = 12 total).
+*   [x] Clarify Save Mastery calculation: Explicitly state the formula: Save Mastery = Attribute Modifier + L1 Combat Mastery.
+*   [x] Specify Level 1 attribute cap: Note the maximum attribute score allowed at Level 1 is +3, referencing DC20 Beta 0.9.5 rulebook (p. 10).
+
+## III. Refinements for `stage2.md` (Stage B - Ancestry)
+
+*   [x] Clarify usage of `attributesFromStageA`: Detail how the attribute scores selected in Stage A (stored in the Svelte store) are accessed and utilized within the logic and UI of Stage B.
+*   [x] Specify Trait data sourcing: State that Trait data (name, cost, description, effects, flags) will be sourced from static rule data using the TypeScript interfaces defined in `src/lib/rulesdata/types.ts`.
+*   [x] Detail Overflow Helper Panel attribute reduction logic: Explain the constraints on attribute reduction:
+    *   The attribute currently overflowing cannot be reduced via the panel.
+    *   No attribute can be reduced below its base value of -2.
+*   [x] Detail UI feedback for Trait rule enforcement: Add tasks to specify how the UI should provide feedback to the user when they attempt actions that violate Trait rules, such as:
+    *   Exceeding the Minor Trait limit.
+    *   Exceeding the Negative Trait point gain limit.
+    *   Exceeding the Ancestry Point budget.
+*   [x] Ensure `handleTraitSelection` logic clarity: Explicitly state that if selecting a trait results in a rule violation (e.g., exceeding limits, causing an attribute overflow), the `openOverflowHelperPanel` function must be triggered.
+
+## IV. Content Generation for `src/lib/rulesdata/types.ts`
+
+*   [x] Define `IAttributeData` interface: Include fields for name, description, and any other relevant static data for attributes.
+*   [x] Define `ITraitEffect` interface: Structure this to encode the effects of traits (e.g., attribute modifiers, skill bonuses, special abilities). Consider a flexible structure that can handle various effect types.
+*   [x] Define `ITrait` interface: Include fields for name, cost (positive for negative traits, negative for positive traits), description, an array of `ITraitEffect`s, and flags (e.g., 'minor', 'negative').
+*   [x] Define `IAncestry` interface: Include fields for name, description, base attribute modifiers, starting traits, ancestry points budget, and any other ancestry-specific static data.
+*   [x] Define `IClassFeatureChoiceOption` interface: For class features that offer choices (e.g., skill proficiencies), define the structure for each option.
+*   [x] Define `IClassFeatureChoice` interface: Define the structure for a set of choices within a class feature (e.g., number of options to choose, list of available options).
+*   [x] Define `IClassFeature` interface: Include fields for name, description, an array of `ITraitEffect`s (for passive or active effects), and an optional array of `IClassFeatureChoice` for features requiring user selection.
+*   [x] Define `IClassDefinition` interface: Include fields for name, description, prime attribute, hit die, starting proficiencies (skills, trades, languages, armor, weapons), Level 1 features (array of `IClassFeature`), and Level 1 choices (array of `IClassFeatureChoice`).
+*   [x] Define `ISkillData`, `ITradeData`, `ILanguageData` interfaces: Define simple interfaces for static data related to skills, trades, and languages, including name and description.
+
+## V. Initial Content Generation for `src/lib/rulesdata/*.ts`
+
+*   [x] Populate `attributes.ts`: Create and export an array or object containing `IAttributeData` for the four core attributes (Might, Agility, Grit, Wit), sourcing descriptions from DC20 Beta 0.9.5 rulebook (p. 9).
+*   [x] Populate `ancestries.ts`: Create and export an array or object containing `IAncestry` data for Human and Elf, including their base attribute modifiers, starting traits, and ancestry points budget, referencing DC20 Beta 0.9.5 rulebook.
+*   [x] Populate `traits.ts`: Create and export an array or object containing `ITrait` data for Human and Elf default traits, plus a selection of Expanded Traits (both positive and negative) with encoded effects, referencing DC20 Beta 0.9.5 rulebook.
+*   [x] Populate `classes.ts`: Create and export an array or object containing `IClassDefinition` data for Barbarian and Sorcerer, including their Level 1 benefits, features, and Level 1 choices, referencing DC20 Beta 0.9.5 rulebook.
+
+## VI. Modifications for `prisma/schema.prisma`
+
+*   [x] Update `CharacterInProgress` model: Add all necessary fields to store the state of Stages A, B, and C. Ensure correct Prisma types are used (e.g., `Int` for attributes, `String?` for JSON data). Set appropriate default values (e.g., attributes `@default(-2)`). Include fields for:
+    *   Attribute scores (Might, Agility, Grit, Wit)
+    *   Selected Ancestry ID
+    *   Selected Trait IDs (array, potentially stored as JSON string)
+    *   Selected Class ID
+    *   Selected Class Feature choices (JSON string)
+*   [x] Define `CharacterSheetData` model: Create this new model with fields corresponding to the final Level 1 character sheet output. Define the relation linking it back to the `CharacterInProgress` model. Include fields for:
+    *   All final calculated stats (e.g., Save Masteries, Grit Points, Combat Mastery, Defense, Initiative, etc.)
+    *   Selected Skills, Trades, Languages
+    *   Selected Proficiencies (Armor, Weapons)
+    *   Any other data required for the final sheet.
+
+## VII. Structure Details for `src/lib/stores/characterInProgressStore.ts`
+
+*   [x] Define initial state: Detail the initial state of the writable Svelte store (`characterInProgressStore`), ensuring it mirrors the default values defined in the `CharacterInProgress` Prisma model.
+*   [x] List key derived stores: Identify and list the key derived stores that will be needed to reactively calculate values based on the core store state (e.g., `primeModifierValue`, `saveMasteries`, `gritPoints`, `ancestryPointsRemaining`, `traitPointsGained`, `minorTraitsSelected`).
+*   [x] Define helper functions and constants: List necessary helper functions (like `getModifier`) and constants (like `L1_COMBAT_MASTERY`) that should be defined within or alongside the store logic for calculations.
+</file>
+
+<file path="memory-bank/activeContext.md">
+# Active Context
+
+This document tracks the current work focus, recent changes, and next steps for the project.
+
+## Current Work Focus
+
+The current focus is on implementing the core features defined in the MVP, specifically the Character Creation Wizard for Level 1 characters. This involves building the frontend Svelte components for each stage (A, B, C) and the corresponding backend SvelteKit endpoints for data persistence and validation.
+
+## Recent Changes
+
+The memory bank documentation has been updated based on the detailed planning documents found in the `projectPlan/` directory (`mvp.md`, `stage1.md`, `stage2.md`). This includes:
+- Defining the specific scope and features for the MVP (Stages A, B, C).
+- Detailing the required UI components, internal state, functions, and logic for Stage A (Attributes) and Stage B (Ancestry).
+- Outlining the backend API endpoints/Form Actions needed for stages A and B, including validation requirements.
+- Incorporating details about the chosen technologies (SvelteKit, Melt UI, TailwindCSS, Prisma, PostgreSQL) and their usage patterns.
+- Documenting the data models (`CharacterInProgress`, `CharacterSheetData`) and initial static rule data structure.
+- Clarifying specific planning decisions like state management approach, calculation responsibilities (frontend provisional, backend authoritative), error handling, and basic resume functionality.
+
+## Next Steps
+
+1.  Implement the Svelte component and logic for Stage A (Attributes) based on `projectPlan/stage1.md`.
+2.  Implement the backend endpoint/Form Action for Stage A data persistence and validation.
+3.  Implement the Svelte component and logic for Stage B (Ancestry) based on `projectPlan/stage2.md`, including the attribute overflow helper panel.
+4.  Implement the backend endpoint/Form Action for Stage B data persistence and validation.
+5.  Implement the Svelte component and logic for Stage C (Class) based on `projectPlan/stage3.md` (once detailed).
+6.  Implement the backend endpoint/Form Action for Stage C data persistence and validation.
+7.  Implement the final character calculation and `CharacterSheetData` creation logic on the backend.
+8.  Implement the Character Page component to display the finalized character sheet.
+9.  Implement the basic resume functionality using browser `localStorage`.
+10. Configure TailwindCSS using the provided `tailwind.config.js`.
+
+## Active Decisions and Considerations
+
+- Using Melt UI primitives for accessible UI components, styled with TailwindCSS.
+- Implementing a dark mode first theme.
+- Storing static rule data in TypeScript files (`src/lib/rulesdata/`) for the MVP.
+- Utilizing a single writable Svelte store (`characterInProgressStore`) for frontend state management, with derived stores for calculated values.
+- Backend is the source of truth for all final calculations and validation.
+- Handling the specific logic for attribute point allocation (Point Buy) and Ancestry Point allocation (including negative traits and attribute cap overflows).
+
+## Important Patterns and Preferences
+
+- Component-based development for the frontend.
+- Clear separation of concerns between frontend UI/provisional logic and backend validation/authoritative calculation.
+- Adherence to the defined dark mode color palette and Inter font.
+- Using SvelteKit Form Actions for wizard stage data submission.
+
+## Learnings and Project Insights
+
+The detailed planning documents have provided a solid foundation and clear steps for the MVP implementation. The complexity of handling attribute cap overflows during trait selection in Stage B highlights the need for careful state management and validation logic on both the frontend and backend. The structure of the static rule data in TypeScript is defined, which will guide the implementation of data loading and lookups.
+</file>
+
+<file path="memory-bank/productContext.md">
+# Product Context
+
+This document describes the purpose and intended functionality of the project from a product perspective.
+
+## Purpose
+
+- This project exists to provide DC20 players with a digital tool for creating Level 1 characters.
+- It solves the problem of manually calculating stats and managing choices during the character creation process by providing a guided, automated workflow.
+
+## How it Works
+
+- Users navigate through a 6-stage wizard (A-Attributes, B-Ancestry, C-Class, D-Background, E-Review, F-Equipment). The MVP will implement stages A, B, and C.
+- At each stage, users make choices (allocate points, select ancestries/traits, select class/features) via input fields, selections, and buttons.
+- The UI provides real-time provisional feedback on how choices affect stats.
+- Data is saved to the database after each completed stage, allowing users to resume later.
+- Upon completing the final stage (F), the backend performs final calculations and saves the complete character data.
+- A dedicated Character Page displays the finalized Level 1 character sheet data.
+
+## User Experience Goals
+
+- Provide a guided, intuitive, and easy-to-follow character creation process.
+- Ensure a clean, modern, and visually appealing user interface with a primary dark mode theme.
+- Offer real-time feedback and validation to help users understand the impact of their choices and adhere to rules.
+- Allow users to save and resume their character creation progress.
+- Present the final character sheet data in a clear, structured, and readable format.
+
+## Features
+
+- **Character Creation Wizard (Level 1 MVP: Stages A, B, C):**
+    - Stage A: Attribute Point Buy allocation, Prime Modifier determination, foundational stat calculation (Save Masteries, Grit, Jump, Provisional Skill Points).
+    - Stage B: Ancestry selection (1 or 2), Ancestry Point allocation for Traits, handling attribute cap overflows with reallocation helper.
+    - Stage C: Class selection, Level 1 Class Feature choices (planned for MVP).
+    - Visual-only breadcrumbs for progress indication.
+    - Real-time frontend validation and provisional stat updates.
+    - Data persistence to `CharacterInProgress` table after each stage.
+- **Character Page Output:**
+    - Displays finalized Level 1 character sheet data from the `CharacterSheetData` table.
+    - Structured HTML format with dark mode styling.
+- **Data Persistence:**
+    - `CharacterInProgress` table for intermediate wizard data.
+    - `CharacterSheetData` table for completed character data.
+    - Basic resume functionality using browser `localStorage` to store the last edited character ID.
+</file>
+
+<file path="memory-bank/progress.md">
+# Progress
+
+This document summarizes the current status of the project, including what has been completed, what remains, and any known issues.
+
+## What Works
+
+- The memory bank documentation has been successfully updated to reflect the project plan detailed in the `projectPlan/` directory.
+- The core technologies, UI design principles, MVP feature scope, data modeling (Prisma schema), key backend logic, key frontend logic, and specific planning decisions for the Level 1 Character Creator MVP have been documented.
+- Detailed plans for Stage A (Attributes) and Stage B (Ancestry) of the character creation wizard have been incorporated into the documentation.
+
+## What's Left to Build
+
+- Implement the frontend Svelte component and logic for Stage A (Attributes).
+- Implement the backend endpoint/Form Action for Stage A data persistence and validation.
+- Implement the frontend Svelte component and logic for Stage B (Ancestry), including the attribute overflow helper panel.
+- Implement the backend endpoint/Form Action for Stage B data persistence and validation.
+- Detail and implement Stage C (Class) of the character creation wizard.
+- Implement the backend logic for final character calculation and `CharacterSheetData` creation.
+- Implement the frontend component for displaying the finalized character sheet.
+- Implement the basic resume functionality using browser `localStorage`.
+- Configure TailwindCSS based on `tailwind.config.js`.
+- Implement static rule data in TypeScript files (`src/lib/rulesdata/`).
+
+## Current Status
+
+The project is in the planning and initial documentation phase for the MVP of the Level 1 Character Creator. The core requirements, scope, and technical approach are defined. Detailed plans for the first two stages of the wizard are documented. The next steps involve translating these plans into code, starting with Stage A.
+
+## Known Issues
+
+- Stage C of the character creation wizard is not yet detailed in the planning documents.
+- The implementation of static rule data in TypeScript files needs to be completed.
+- The attribute overflow helper panel logic in Stage B requires careful implementation and testing to ensure correct attribute reallocation and validation.
+
+## Evolution of Project Decisions
+
+- The decision to initially store static rule data in TypeScript files was made for simplicity during the MVP phase, with a potential future plan to move it to the database.
+- The character creation wizard stages were re-ordered from the original DC20 steps to A-Attributes, B-Ancestry, C-Class, D-Background, E-Review, F-Equipment for a more streamlined digital workflow.
+- A specific dark mode color palette and font (Inter) have been chosen for the UI aesthetics.
+</file>
+
+<file path="memory-bank/projectbrief.md">
+# Project Brief
+
+This document serves as the foundational document for the project, outlining its core requirements, goals, and scope.
+
+## Project Goals
+
+- Create a Level 1 Character Creator for DC20.
+- Implement a guided, multi-stage wizard for character creation.
+- Display a finalized Level 1 character sheet.
+- Persist character data during and after creation.
+
+## Scope
+
+- **Included:**
+    - Level 1 Character Creation Wizard (Stages A, B, C).
+    - Character Page Output displaying finalized Level 1 data.
+    - Data persistence for in-progress and completed characters using Prisma and PostgreSQL.
+    - Frontend UI using SvelteKit, Melt UI, and TailwindCSS.
+    - Backend logic for validation and final calculations.
+    - Basic resume creation functionality using browser localStorage.
+- **Out of Scope for MVP:**
+    - Wizard Stages D, E, F.
+    - Character Level Up Wizard.
+    - Custom Equipment creation.
+    - Name Generator.
+    - Advanced features like image generation, PDF output, user accounts, sharing characters.
+    - Moving static rule data to the database.
+    - Interactive breadcrumb navigation.
+    - Light Mode theme.
+
+## Key Requirements
+
+- Implement Point Buy system for attributes (Stage A).
+- Allow selection of 1 or 2 Ancestries and allocation of Ancestry Points for Traits (Stage B).
+- Handle attribute cap overflows during trait selection with a reallocation helper (Stage B).
+- Implement Class selection and feature choices for Level 1 (Stage C - planned).
+- Store intermediate character data in `CharacterInProgress` table.
+- Store final character data in `CharacterSheetData` table.
+- Use SvelteKit Form Actions/API routes for backend interactions.
+- Implement frontend validation and display provisional stats.
+- Implement backend authoritative validation and final calculations.
+- Style the application using TailwindCSS dark mode with a specific color palette and Inter font.
+
+## Target Audience
+
+- Players of the DC20 tabletop roleplaying game who want a digital tool to create Level 1 characters.
+
+## Stakeholders
+
+- DC20 players (users).
+- Project developers/maintainers.
+
+## Initial Thoughts/Notes
+
+- The project follows a guided wizard flow, breaking down character creation into manageable steps.
+- Emphasis on a clean, modern dark mode UI.
+- Static rule data is initially hardcoded for simplicity in the MVP.
+- Backend is the source of truth for final calculations and validation.
+</file>
+
+<file path="memory-bank/systemPatterns.md">
+# System Patterns
+
+This document outlines the system architecture, key technical decisions, and design patterns used in the project.
+
+## Architecture
+
+- The project follows a full-stack architecture using SvelteKit.
+- Frontend: Svelte components handle the user interface and client-side logic.
+- Backend: SvelteKit endpoints (Form Actions or API Routes) handle data persistence, validation, and final calculations.
+- Database: PostgreSQL is used for data storage, accessed via Prisma ORM.
+
+## Design Patterns
+
+- **Component-Based Architecture:** The frontend is built using reusable Svelte components (e.g., `SelectionCard`, `PointAllocator`).
+- **State Management:** A single writable Svelte store (`characterInProgressStore`) is used to manage the character creation data on the frontend. Derived stores are used for calculated UI values.
+- **Backend Validation:** Backend endpoints are responsible for authoritative validation of user input and final calculations, ensuring data integrity.
+
+## Technical Decisions
+
+- **SvelteKit:** Chosen for its full-stack capabilities, allowing for a unified development experience.
+- **Melt UI:** Selected for providing accessible, unstyled UI primitives that can be easily styled with TailwindCSS.
+- **TailwindCSS:** Chosen for its utility-first approach to styling, enabling rapid UI development and consistency with the dark mode theme.
+- **Prisma:** Selected as the ORM for its ease of use and type safety with TypeScript.
+- **Static Rule Data:** Initially stored as TypeScript objects/arrays for simplicity and faster iteration during the MVP phase.
+
+## Component Relationships
+
+- The main wizard component manages the current stage and renders the appropriate stage component (e.g., `StageA_Attributes.svelte`, `StageB_Ancestry.svelte`).
+- Stage components interact with the `characterInProgressStore` to read and update character data.
+- UI components (Melt UI primitives, custom components) are used within stage components to build the user interface.
+- Frontend components communicate with backend endpoints via SvelteKit Form Actions or API Routes to persist data.
+
+## Critical Implementation Paths
+
+- The character creation wizard flow (Stages A -> B -> C).
+- Data persistence after each wizard stage.
+- Backend validation and final calculation process.
+- Displaying the finalized character sheet.
+</file>
+
+<file path="memory-bank/techContext.md">
+# Technical Context
+
+This document details the technologies, development setup, and technical constraints of the project.
+
+## Technologies Used
+
+- **Framework:** SvelteKit (Full-stack JavaScript/TypeScript)
+- **UI Primitives:** Melt UI (Primary), potentially `shadcn-svelte` (using Bits UI) / Bits UI as fallback.
+- **Styling:** TailwindCSS
+- **ORM & Migrations:** Prisma
+- **Database:** PostgreSQL (hosted on Render Free tier)
+- **Frontend State Management:** Svelte stores (writable and derived)
+- **Rule Data Storage:** TypeScript objects/arrays (initially hardcoded in `src/lib/rulesdata/`)
+
+## Development Setup
+
+- Requires Node.js and npm/yarn/pnpm.
+- Prisma CLI for database migrations.
+- Standard SvelteKit development environment.
+- TailwindCSS setup (configuration in `tailwind.config.js`).
+
+## Technical Constraints
+
+- Render Free tier database limitations (e.g., connection limits, sleep times).
+- Initial static rule data is hardcoded, requiring code changes for rule updates.
+- Level 1 attribute cap of +3.
+- Ancestry Point allocation rules (5 points, 1 Minor Trait limit, +2 points max from Negative Traits).
+
+## Dependencies
+
+- SvelteKit
+- Melt UI
+- TailwindCSS
+- Prisma
+- PostgreSQL driver (e.g., `pg`)
+- Other standard SvelteKit dependencies.
+
+## Tool Usage Patterns
+
+- Using Prisma CLI for schema definition and migrations.
+- Using TailwindCSS for styling components.
+- Using SvelteKit's built-in features for routing, API endpoints (Form Actions), and server-side logic.
+- Using Melt UI primitives for building accessible UI components.
+</file>
 
 <file path="package.json">
 {
@@ -183,6 +550,34 @@ model CharacterSheetData {
 
   createdAt            DateTime @default(now())
   updatedAt            DateTime @updatedAt
+}
+</file>
+
+<file path="projectPlan/tailwind.config.js">
+// tailwind.config.js
+module.exports = {
+  darkMode: 'class',
+  theme: {
+    extend: {
+      colors: {
+        'yellow-accent': '#FFBE0B',
+        'orange-secondary': '#FB5607',
+        'magenta-error': '#FF006E',
+        'purple-primary': '#8338EC',
+        'blue-info': '#3A86FF',
+        // Define your dark background shades
+        'dark-bg-primary': '#111827', // Example: Tailwind gray-900
+        'dark-bg-secondary': '#1F2937', // Example: Tailwind gray-800
+        // Define your light text shades
+        'light-text-primary': '#E5E7EB', // Example: Tailwind gray-200
+        'light-text-secondary': '#D1D5DB', // Example: Tailwind gray-300
+      },
+      fontFamily: {
+        sans: ['Inter', 'sans-serif'], // Make Inter the default sans-serif
+      },
+    },
+  },
+  // ... plugins
 }
 </file>
 
@@ -1181,34 +1576,6 @@ Create a Svelte component (e.g., `StageB_Ancestry.svelte`) that allows the user 
 *   Returns: Success/error response.
 
 ---
-</file>
-
-<file path="projectPlan/tailwind.config.js">
-// tailwind.config.js
-module.exports = {
-  darkMode: 'class',
-  theme: {
-    extend: {
-      colors: {
-        'yellow-accent': '#FFBE0B',
-        'orange-secondary': '#FB5607',
-        'magenta-error': '#FF006E',
-        'purple-primary': '#8338EC',
-        'blue-info': '#3A86FF',
-        // Define your dark background shades
-        'dark-bg-primary': '#111827', // Example: Tailwind gray-900
-        'dark-bg-secondary': '#1F2937', // Example: Tailwind gray-800
-        // Define your light text shades
-        'light-text-primary': '#E5E7EB', // Example: Tailwind gray-200
-        'light-text-secondary': '#D1D5DB', // Example: Tailwind gray-300
-      },
-      fontFamily: {
-        sans: ['Inter', 'sans-serif'], // Make Inter the default sans-serif
-      },
-    },
-  },
-  // ... plugins
-}
 </file>
 
 </files>
