@@ -6,26 +6,16 @@ export const ancestriesData: IAncestry[] = [
   {
     id: 'human',
     name: 'Human',
-    description: 'Humans are the most common ancestry in the world, known for their adaptability and resilience.',
-    defaultTraitIds: ['human_resolve'], // Example default trait
-    expandedTraitIds: [ // Example expanded traits available for selection
-      'human_attribute_increase',
-      'human_skill_expertise',
-      'negative_trait_example', // Include example negative trait
-      'minor_trait_example', // Include example minor trait
-    ],
+    description: '[Brief flavor description for Human, e.g., "Adaptable and varied..."]',
+    defaultTraitIds: ['human_attribute_increase', 'human_skill_expertise', 'human_resolve', 'human_undying'], // Verify IDs match trait definitions below
+    expandedTraitIds: ['human_trade_expertise', 'human_determination', 'human_unbreakable', 'human_attribute_decrease'], // Add all from DC20 p.108
   },
   {
     id: 'elf',
     name: 'Elf',
-    description: 'Elves are graceful and long-lived beings with a deep connection to nature.',
-    defaultTraitIds: ['elf_keen_senses'], // Example default trait
-    expandedTraitIds: [ // Example expanded traits available for selection
-      'elf_fey_ancestry',
-      'elf_long_strider',
-      'negative_trait_example', // Include example negative trait
-      'minor_trait_example', // Include example minor trait
-    ],
+    description: '[Brief flavor description for Elf, e.g., "Graceful and perceptive..."]',
+    defaultTraitIds: ['elf_elven_will', 'elf_nimble', 'elf_agile_explorer', 'elf_discerning_sight'], // Verify IDs
+    expandedTraitIds: ['elf_quick_reactions', 'elf_peerless_sight', 'elf_climb_speed', 'elf_speed_increase', 'elf_trade_expertise_elf', 'elf_plant_knowledge', 'elf_brittle', 'elf_frail', 'elf_might_decrease'] // Add all from DC20 p.108
   },
   // Add other ancestries as needed
 ];

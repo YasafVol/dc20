@@ -1,99 +1,58 @@
-// src/lib/rulesdata/classes.ts
+import { IClassDefinition } from './types';
 
-import type { IClassDefinition } from './types';
+// To be placed in: src/lib/rulesdata/classes.ts
 
-export const classesData: IClassDefinition[] = [
-  {
-    id: 'barbarian',
-    name: 'Barbarian',
-    description: 'A fierce warrior of primitive background who can enter a battle rage.',
-    baseHpContribution: 12, // DC20 p.118
-    startingSP: 0, // DC20 p.118
-    startingMP: 0, // DC20 p.118
-    skillPointGrantLvl1: 0, // DC20 p.118
-    saveDCBase: 8, // DC20 p.118
-    deathThresholdBase: 10, // DC20 p.118
-    moveSpeedBase: 30, // DC20 p.118
-    restPointsBase: 4, // DC20 p.118
-    gritPointsBase: 2, // DC20 p.118 (Base Grit, before Charisma mod)
-    initiativeBonusBase: 0, // DC20 p.118 (Base Initiative, before Agility mod)
-    level1Features: [
-      {
-        id: 'barbarian_rage',
-        name: 'Rage',
-        description: 'In battle, you fight with primal ferocity. On your turn, you can enter a rage as a bonus action.', // DC20 p.118 (Summarized)
-        level: 1,
-        effects: [], // Effects of Rage are complex, likely handled in character sheet logic
-      },
-      {
-        id: 'barbarian_unarmored_defense',
-        name: 'Unarmored Defense',
-        description: 'While you are wearing no armor, your Armor Class equals 10 + your Agility modifier + your Might modifier.', // DC20 p.118
-        level: 1,
-        effects: [], // Effect applied in defense calculation logic
-      },
-    ],
-    featureChoicesLvl1: [], // Barbarian has no Lvl 1 feature choices listed on p.118
-  },
-  {
-    id: 'sorcerer',
-    name: 'Sorcerer',
-    description: 'A spellcaster who draws on inherent magic from a gift or bloodline.',
-    baseHpContribution: 6, // DC20 p.149
-    startingSP: 0, // DC20 p.149
-    startingMP: 6, // DC20 p.149
-    skillPointGrantLvl1: 0, // DC20 p.149
-    saveDCBase: 8, // DC20 p.149
-    deathThresholdBase: 10, // DC20 p.149
-    moveSpeedBase: 30, // DC20 p.149
-    restPointsBase: 4, // DC20 p.149
-    gritPointsBase: 2, // DC20 p.149 (Base Grit, before Charisma mod)
-    initiativeBonusBase: 0, // DC20 p.149 (Base Initiative, before Agility mod)
-    level1Features: [
-      {
-        id: 'sorcerer_spellcasting',
-        name: 'Spellcasting',
-        description: 'You can cast spells.', // DC20 p.149 (Summarized)
-        level: 1,
-        effects: [], // Spellcasting is complex, handled elsewhere
-      },
-      {
-        id: 'sorcerer_sorcerous_origin',
-        name: 'Sorcerous Origin',
-        description: 'Choose a sorcerous origin, which describes the source of your innate magical power.', // DC20 p.149
-        level: 1,
-        effects: [], // The choice itself grants effects, not this base feature
-      },
-    ],
-    featureChoicesLvl1: [
-      {
-        id: 'sorcerous_origin_choice',
-        prompt: 'Choose your Sorcerous Origin:',
-        type: 'select_one',
-        options: [
-          {
-            value: 'draconic_bloodline',
-            label: 'Draconic Bloodline',
-            description: 'Your innate magic comes from draconic magic that was mingled with your blood or that of your ancestors.', // DC20 p.150 (Summarized)
-            effectsOnChoice: [
-              { type: 'GRANT_FEATURE', target: 'draconic_bloodline_feature' }, // Placeholder for granting origin features
-              { type: 'GRANT_HP_PER_LEVEL', value: 1 }, // Draconic Resilience HP increase
-              { type: 'GRANT_UNARMORED_AC', value: { formula: '13 + Agility' } }, // Draconic Resilience AC
-            ],
-          },
-          {
-            value: 'intuitive_magic',
-            label: 'Intuitive Magic',
-            description: 'Your magic comes from a deep, innate understanding of the weave.', // DC20 p.151 (Summarized)
-            effectsOnChoice: [
-               { type: 'GRANT_FEATURE', target: 'intuitive_magic_feature' }, // Placeholder for granting origin features
-               { type: 'MODIFY_STAT', target: 'skillPointGrantLvl1', value: 2 }, // Gain 2 additional skill points
-            ],
-          },
-          // Add other origins as needed
-        ],
-      },
-    ],
-  },
-  // Add other classes as needed
-];
+// IClassDefinition for Barbarian:
+export const barbarianClass: IClassDefinition = {
+  id: 'barbarian',
+  name: 'Barbarian',
+  description: '[Extract "Source of Power" description for Barbarian from DC20 p.118]',
+  baseHpContribution: 9, // From "Class HP" in char creation p.93, which is Lvl 1 value from class table p.118
+  startingSP: 1, // From class table p.118, Lvl 1 Stamina Points
+  startingMP: 0,
+  skillPointGrantLvl1: 0, // Any L1 skill point grants beyond background
+  tradePointGrantLvl1: 0, // Any L1 trade point grants beyond background
+  combatTraining: ['Weapons', 'All Armor', 'All Shields'], // From p.118 "Barbarian Martial Path"
+  // Add cantripsKnownLvl1, spellsKnownLvl1 if applicable (not for Barbarian L1)
+  maneuversKnownLvl1: 'All Attack', // Plus additional from table, table says "+4" - this needs to be interpreted as a number of *choices* if not all are granted. Assume "All Attack" + 4 choices for now. Or just 4 choices total if "All Attack" is implicit to Martial Path.
+  techniquesKnownLvl1: 0, // From Lvl 1 on class table p.118 (Note: table says known, but L1 is 0 usually, L2 gives 1)
+  saveDCBase: 0, // Placeholder, need actual value from DC20
+  deathThresholdBase: 0, // Placeholder, need actual value from DC20
+  moveSpeedBase: 0, // Placeholder, need actual value from DC20
+  restPointsBase: 0, // Placeholder, need actual value from DC20
+  gritPointsBase: 0, // Placeholder, need actual value from DC20
+  initiativeBonusBase: 0, // Placeholder, need actual value from DC20
+  cantripsKnownLvl1: 0, // Not applicable for Barbarian L1
+  spellsKnownLvl1: 0, // Not applicable for Barbarian L1
+  level1Features: [
+    {
+      id: 'barbarian_rage',
+      name: 'Rage',
+      level: 1,
+      description: '[Summarize Rage from DC20 p.119. Effects: +1 dmg Melee Martial Attacks, ADV Might Saves, PD -5, Resistance (Half) to Elemental and Physical damage. Lasts 1 min. Costs 1 AP, 1 SP.]',
+      effects: [
+          { type: 'GRANT_ABILITY', value: 'Rage_Mechanics_Bundle' } // Complex ability
+      ]
+    },
+    {
+      id: 'barbarian_berserker',
+      name: 'Berserker',
+      level: 1,
+      description: '[Summarize Berserker benefits from DC20 p.119: Charge, Berserker Defense, Fast Movement, Mighty Leap.]',
+      effects: [
+        { type: 'GRANT_ABILITY', subFeature: 'Charge', descriptionOverride: 'Move 2 Spaces before Melee Martial Attack.' },
+        { type: 'GRANT_PASSIVE', subFeature: 'Berserker_Defense', descriptionOverride: '+2 AD when not wearing Armor.' },
+        { type: 'GRANT_PASSIVE', subFeature: 'Fast_Movement', descriptionOverride: '+1 Speed when not wearing Armor.' },
+        { type: 'GRANT_PASSIVE', subFeature: 'Mighty_Leap', descriptionOverride: 'Use Might for Jump Distance & Falling Damage calc.' }
+      ]
+    },
+    {
+      id: 'barbarian_shattering_force',
+      name: 'Shattering Force (Flavor)',
+      level: 1,
+      description: '[DC20 p.119: "When you Hit a structure or mundane object with a Melee Attack, it’s considered a Critical Hit."]',
+      effects: [{ type: 'FLAVOR_MECHANIC_NOTE', value: 'Melee attacks vs objects/structures are Critical Hits.' }]
+    }
+  ],
+  featureChoicesLvl1: [] // No explicit user choices for L1 features for Barbarian
+}

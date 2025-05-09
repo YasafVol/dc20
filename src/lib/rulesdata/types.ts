@@ -19,6 +19,7 @@ export interface ITraitEffect {
     options?: string[]; // Optional list of specific options (e.g., skill IDs, attribute IDs)
   };
   descriptionOverride?: string; // Optional override for how this effect is described
+  subFeature?: string; // Optional sub-feature identifier for complex effects
 }
 
 // Interface for Traits
@@ -78,13 +79,19 @@ export interface IClassDefinition {
   startingSP: number;
   startingMP: number;
   skillPointGrantLvl1?: number; // Additional skill points granted at Lvl 1 (beyond Int mod)
-  // ... other base stats like Save DC, Death Threshold, Move Speed, Rest Points, Grit Points, Initiative Bonus
+  tradePointGrantLvl1?: number; // Additional trade points granted at Lvl 1 (beyond Int mod)
+  combatTraining?: string[]; // Array of combat training proficiencies (e.g., 'Weapons', 'All Armor')
+  maneuversKnownLvl1?: string | number; // Maneuvers known at Level 1 (can be 'All Attack' or a number)
+  techniquesKnownLvl1?: number; // Techniques known at Level 1
   saveDCBase: number;
   deathThresholdBase: number;
   moveSpeedBase: number;
   restPointsBase: number;
   gritPointsBase: number; // Base grit points (before Charisma mod)
   initiativeBonusBase: number; // Base initiative bonus (before Agility mod)
+  // Add cantripsKnownLvl1, spellsKnownLvl1 if applicable (not for Barbarian L1)
+  cantripsKnownLvl1?: number;
+  spellsKnownLvl1?: number;
 
   level1Features: IClassFeature[]; // Features gained at Level 1
   featureChoicesLvl1?: IClassFeatureChoice[]; // Choices available for features at Level 1
@@ -95,7 +102,7 @@ export interface IClassDefinition {
 export interface ISkillData {
   id: string;
   name: string;
-  attributeAssociation: 'might' | 'agility' | 'charisma' | 'intelligence'; // Associated attribute
+  attributeAssociation: 'might' | 'agility' | 'charisma' | 'intelligence' | 'prime'; // Associated attribute
   description: string;
 }
 
@@ -113,4 +120,5 @@ export interface ILanguageData {
   id: string;
   name: string;
   type: 'standard' | 'exotic'; // Type of language
+  description: string;
 }

@@ -1,46 +1,44 @@
 // src/lib/rulesdata/attributes.ts
 
 import type { IAttributeData } from './types';
-
+// To be placed in: src/lib/rulesdata/attributes.ts
 export const attributesData: IAttributeData[] = [
-  {
-    id: 'might',
-    name: 'Might',
-    description: 'Your Strength of Body. (DC20 p.9)',
-    derivedStats: [
-      { statName: 'Precision Defense (PD)', formula: '8 + CM + Might + Intelligence + Equip' },
-      { statName: 'Area Defense (AD)', formula: '8 + CM + Might + Charisma + Equip' },
-      { statName: 'Jump Distance', formula: 'Agility < 1 ? 1 : Agility' }, // Jump distance is based on Agility, but Might contributes to AD
-    ],
-  },
-  {
-    id: 'agility',
-    name: 'Agility',
-    description: 'Your Balance, Nimbleness, and Dexterity. (DC20 p.9)',
-    derivedStats: [
-      { statName: 'Precision Defense (PD)', formula: '8 + CM + Might + Intelligence + Equip' },
-      { statName: 'Jump Distance', formula: 'Agility < 1 ? 1 : Agility' },
-      { statName: 'Initiative Bonus', formula: 'Base + Agility' },
-    ],
-  },
-  {
-    id: 'charisma',
-    name: 'Charisma',
-    description: 'Your Charm, Presence, Persuasiveness, and Force of Will. (DC20 p.9)',
-    derivedStats: [
-      { statName: 'Area Defense (AD)', formula: '8 + CM + Might + Charisma + Equip' },
-      { statName: 'Grit Points', formula: 'Base + Charisma' },
-      { statName: 'Save DC', formula: '8 + CM + Prime Modifier Value + Charisma' }, // Assuming Charisma is used for Save DC calculation if not Prime Mod
-    ],
-  },
-  {
-    id: 'intelligence',
-    name: 'Intelligence',
-    description: 'Your Reasoning, Understanding, and Wisdom. (DC20 p.9)',
-    derivedStats: [
-      { statName: 'Precision Defense (PD)', formula: '8 + CM + Might + Intelligence + Equip' },
-      { statName: 'Skill Points', formula: '5 + Intelligence Modifier' },
-      { statName: 'Save DC', formula: '8 + CM + Prime Modifier Value + Intelligence' }, // Assuming Intelligence is used for Save DC calculation if not Prime Mod
-    ],
-  },
+// TODO: Replace bracketed placeholders with accurate information from the DC20 Beta 0.9.5 rulebook.
+{
+  id: 'might',
+  name: 'Might',
+  description: '[Extract description for Might from DC20 p.9]',
+  derivedStats: [ // Examples, verify/adjust based on actual rules for each attribute
+    { statName: 'Part of Area Defense calculation', formula: 'AD = 8 + CM + Might + Charisma + Bonuses' },
+    { statName: 'Contributes to Max HP', formula: 'Max HP = Class HP + Might + Ancestry HP' }
+  ]
+},
+{
+  id: 'agility',
+  name: 'Agility',
+  description: '[Extract description for Agility from DC20 p.9]',
+  derivedStats: [
+    { statName: 'Part of Precision Defense calculation', formula: 'PD = 8 + CM + Agility + Intelligence + Bonuses' },
+    { statName: 'Determines Jump Distance', formula: 'Jump Distance = Agility (min 1)' },
+    { statName: 'Contributes to Initiative', formula: 'Initiative = CM + Agility' }
+  ]
+},
+{
+  id: 'charisma',
+  name: 'Charisma',
+  description: '[Extract description for Charisma from DC20 p.9]',
+  derivedStats: [
+    { statName: 'Part of Area Defense calculation', formula: 'AD = 8 + CM + Might + Charisma + Bonuses' },
+    { statName: 'Determines Grit Points', formula: 'Grit Points = 2 + Charisma' }
+  ]
+},
+{
+  id: 'intelligence',
+  name: 'Intelligence',
+  description: '[Extract description for Intelligence from DC20 p.9]',
+  derivedStats: [
+    { statName: 'Part of Precision Defense calculation', formula: 'PD = 8 + CM + Agility + Intelligence + Bonuses' },
+    { statName: 'Determines Base Skill Points', formula: 'Skill Points = 5 + Intelligence' }
+  ]
+}
 ];
