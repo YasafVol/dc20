@@ -12,7 +12,7 @@ Create a Svelte component (e.g., `StageB_Ancestry.svelte`) that allows the user 
 ## II. Svelte Component: `StageB_Ancestry.svelte`
 
 ### A. Props:
-*   `characterInProgressStore`: Writable Svelte store (holds `attributesFromStageA`, `selectedAncestries`, `selectedTraits`, `ancestryPointsAvailable`, etc.).
+*   `characterInProgressStore`: Writable Svelte store (holds `attributesFromStageA`, `selectedAncestries`, `selectedTraits`, `ancestryPointsAvailable`, etc.). Attribute values (e.g., `$characterInProgressStore.attribute_might`) set in Stage A are accessed from this store for display and overflow calculations.
 
 ### B. Internal State (Reactive Svelte Variables):
 *   `selectedAncestry1_ID`: String | null
@@ -54,6 +54,26 @@ Create a Svelte component (e.g., `StageB_Ancestry.svelte`) that allows the user 
                     *   Label: Trait Name (Cost: X) - (Tailwind: `font-medium`). Dynamic class if selected (`text-yellow-accent`).
                     *   Melt UI `Tooltip` (on hover/focus on trait name): Shows full trait description.
                     *   *If selecting this trait would cause an overflow AND the Helper Panel isn't already open for it, clicking it should trigger `openOverflowHelperPanel(trait)` instead of direct selection.*
+    *   *Trait listings (name, cost, description, effects, Minor/Negative flags) are populated from static rule data, using `IAncestry` and `ITrait` TypeScript interfaces.*
+
+**2. Ancestry Selection Section (`div`):**
+    *   Title (`h3`): "Choose Your Ancestry (Up to 2)"
+    *   Two Melt UI `Select` components (or custom `SelectionCard`s):
+        *   For "Ancestry 1" (bind to `selectedAncestry1_ID`)
+        *   For "Ancestry 2" (bind to `selectedAncestry2_ID`, with a "None" option).
+        *   Populated from static rule data. Styled with Tailwind.
+
+**3. Ancestry Points & Trait Allocation Section (`div`):**
+    *   Budget Display (`p`): "Ancestry Points: {ancestryPointsRemaining} / {totalAncestryPointsAvailable} Remaining"
+    *   **Conditional Trait Listing (for Ancestry 1 and Ancestry 2 if selected):**
+        *   For each selected ancestry:
+            *   Subtitle (`h4`): "[Ancestry Name] Traits"
+            *   List (`ul`) of its available traits:
+                *   Each trait item (`li` - Tailwind: `flex items-center justify-between p-2 my-1 rounded dark:hover:bg-dark-bg-primary`):
+                    *   Melt UI `Checkbox` (or `Toggle`) for selection (bind checked state to logic that updates `currentSelectedTraits` and points).
+                    *   Label: Trait Name (Cost: X) - (Tailwind: `font-medium`). Dynamic class if selected (`text-yellow-accent`).
+                    *   Melt UI `Tooltip` (on hover/focus on trait name): Shows full trait description.
+                    *   *If selecting this trait would cause an overflow AND the Helper Panel isn't already open for it, clicking it should trigger `openOverflowHelperPanel(trait)` instead of direct selection.*
 
 **4. Chosen Traits Summary (`div`):**
     *   Title (`h3`): "Selected Traits"
@@ -73,6 +93,7 @@ Create a Svelte component (e.g., `StageB_Ancestry.svelte`) that allows the user 
     *   `Dialog.Title`: "Attribute Cap Reached for '{overflowTrait.name}'"
     *   `Dialog.Description` (`p`): "Selecting '{overflowTrait.name}' will increase '{overflowAttributeName}' by +{overflowTrait.attributeBonusValue}, exceeding the Level 1 cap of +3. You have {overflowAmount} point(s) to free up by reducing other attributes."
     *   **Attribute Reduction Section within Panel:**
+        *   The panel allows reducing any attribute *except* the one `overflowAttributeName` (that the `overflowTrait` is trying to increase). Attributes cannot be reduced below -2.
         *   For each of the 4 attributes (displaying values from `tempAttributesForReallocation`):
             *   Label: Attribute Name: [Current Value in Panel]
             *   Melt UI `Button` ("-"):
@@ -92,7 +113,7 @@ Create a Svelte component (e.g., `StageB_Ancestry.svelte`) that allows the user 
 ### D. Functions & Logic:
 *   `handleTraitSelection(trait)`:
     *   Checks for attribute overflow if trait modifies an attribute.
-    *   If overflow: `openOverflowHelperPanel(trait)`.
+    *   If overflow: `openOverflowHelperPanel(trait)`. *Clicking a problematic trait triggers this instead of direct selection and point deduction.*
     *   Else: Toggles trait in `currentSelectedTraits`, updates point counts, checks Minor/Negative Trait limits.
 *   `openOverflowHelperPanel(trait)`:
     *   Sets `overflowTrait`, `overflowAttributeName`, `overflowAmount`.
@@ -108,6 +129,10 @@ Create a Svelte component (e.g., `StageB_Ancestry.svelte`) that allows the user 
     *   `closeOverflowHelperPanel()`.
 *   Logic to enforce: Max 2 ancestries, 1 Minor Trait, max +2 points gain from Negative Traits, total Ancestry Points spent = 5 (after accounting for negative traits).
 *   All choices and final attribute adjustments persisted to `characterInProgressStore` and then to backend.
+*   **UI Feedback for Trait Rules:**
+    *   When a Minor Trait is selected, disable selection of other Minor Traits and provide a tooltip/message.
+    *   When selecting Negative Traits, `totalAncestryPointsAvailable` display updates. If the +2 point gain limit from Negative Traits is reached, disable further Negative Trait selection and message the user.
+    *   Disable trait selection if `ancestryPointsRemaining` would be negative (unless it's a negative trait resolving this).
 
 ### E. Styling Notes (TailwindCSS):
 *   Dark mode theme, Inter font, chosen color palette.

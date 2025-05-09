@@ -1,0 +1,9 @@
+{
+  "devDependencies": {
+    "prisma": "^6.7.0",
+    "svelte": "^5.28.2"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.7.0"
+  }
+}

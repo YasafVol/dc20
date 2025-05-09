@@ -25,6 +25,7 @@ Create a Svelte component (e.g., `StageA_Attributes.svelte`) that allows the use
 *   `gritPoints`: Reactive/Derived Number (`$: gritPoints = 2 + getModifier(attributes.Charisma)`)
 *   `jumpDistance`: Reactive/Derived Number (`$: jumpDistance = attributes.Agility < 1 ? 1 : attributes.Agility`)
 *   `provisionalSkillPoints`: Reactive/Derived Number (`$: provisionalSkillPoints = 5 + getModifier(attributes.Intelligence)`)
+*   `L1_COMBAT_MASTERY`: Number (constant: 1) - *Sourced from global static rule data (DC20 p.22).*
 
 ### C. UI Structure & Components (Melt UI + TailwindCSS):
 
@@ -50,7 +51,10 @@ Create a Svelte component (e.g., `StageA_Attributes.svelte`) that allows the use
                 *   Name (Melt UI `Label` for the input): e.g., "Might" (Tailwind: `text-xl font-medium text-light-text-primary`)
                 *   Save Mastery (`span`): e.g., "Save: +{saveMasteries.Might}" (Tailwind: `text-blue-info font-medium`)
             *   Attribute Description (`p`):
-                *   Text: Static description from rule data.
+                *   Text: "Your Strength of Body." (Might)
+                *   Text: "Your Balance, Nimbleness, and Dexterity." (Agility)
+                *   Text: "Your Charm, Presence, Persuasiveness, and Force of Will." (Charisma)
+                *   Text: "Your Reasoning, Understanding, and Wisdom." (Intelligence)
                 *   Tailwind: `text-sm text-light-text-secondary mb-2`
         *   **Bottom Section - Input & Derived Stats:**
             *   Point Buy Input Control (`div`):
@@ -90,12 +94,14 @@ Create a Svelte component (e.g., `StageA_Attributes.svelte`) that allows the use
     *   `p`: "Area Defense (AD) = 8 + CM(+1) + Might ({attributes.Might}) + Charisma ({attributes.Charisma}) + Equip Bonuses"
 
 ### D. Functions & Logic:
-*   `getModifier(attributeScore)`: Helper function to calculate attribute modifier (e.g., (score - 0) or however DC20 defines it, likely just the score itself is the modifier).
+*   `getModifier(attributeScore)`: Helper function to get an attribute's modifier. In DC20, the attribute score itself (e.g., +2, -1, 0) is directly used as the modifier. This function should `return attributeScore;`. It handles `null` or `undefined` scores by returning `0`.
 *   `calculatePointsSpent(attributes)`:
-    *   Calculates total points spent based on current attribute values (each +1 from -2 base costs 1 point).
+    *   Calculates total points spent. Each attribute starts at -2. Each +1 increase costs 1 point. Total budget is 12 points. Formula: `sum(current_attr_value - (-2))` should equal 12 when done.
+*   `calculateSaveMasteries(attributes, combatMastery)`:
+    *   Calculates Save Mastery for each attribute. Formula: `attributeScore + combatMastery`. Combat Mastery (CM) at Level 1 is +1 (DC20, p.22).
 *   Event handlers for attribute +/- buttons:
     *   Increment/decrement the specific attribute.
-    *   Ensure attribute value stays within -2 and +3 (Level 1 limit).
+    *   Ensure attribute value stays within -2 and +3 (Level 1 limit). The Level 1 attribute cap is +3.
     *   Update `characterInProgressStore`.
 *   Logic to determine `primeModifierAttribute`:
     *   Find the highest attribute(s).
@@ -103,6 +109,7 @@ Create a Svelte component (e.g., `StageA_Attributes.svelte`) that allows the use
     *   If multiple are tied, enable the tie-breaker UI and use the user's selection.
 *   Validation logic:
     *   `pointsRemaining` cannot be negative when user tries to advance (or disable increment buttons if budget met).
+    *   Ensure no attribute exceeds the Level 1 cap of +3.
 *   Function to persist current state to `characterInProgressStore` and call backend API on "Next Step".
 
 ### E. Styling Notes (TailwindCSS):

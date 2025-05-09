@@ -29,7 +29,7 @@
 
 ## III. MVP Feature Scope
 1.  **Character Creation Wizard (Level 1 Only):**
-    *   Guided, 10-stage UI based on DC20's Level 1 creation steps (re-ordered for impact: A-Attributes, B-Ancestry, C-Class, D-Background, E-Review, F-Equipment).
+    *   Guided, 6-stage UI implementing the initial stages (A-Attributes, B-Ancestry, C-Class) of the re-ordered flow (A-Attributes, B-Ancestry, C-Class, D-Background, E-Review, F-Equipment). These stages incorporate decision points from DC20's original 10 steps for Level 1.
     *   Visual-only breadcrumbs indicating progress through the re-ordered stages.
     *   Input fields, selections, point allocation with real-time validation for Level 1 constraints.
     *   Dynamic *provisional* updates of relevant stats on the frontend as choices are made.
@@ -66,7 +66,45 @@
     *   `id`: String `@id @default(uuid())`
     *   `characterInProgressId`: String @unique // Links to the completed CharacterInProgress
     *   `characterInProgress`: CharacterInProgress @relation(fields: [characterInProgressId], references: [id])
-    *   Fields to store all final calculated stats for a Level 1 character (e.g., `finalName`, `finalLevel`, `finalMight`, `finalHPMax`, `skillsJson`, `traitsJson`, `equipmentJson`, etc.).
+    *   **Final Output Fields (Level 1 Character Sheet):**
+        *   `finalName: String`
+        *   `finalPlayerName: String?`
+        *   `finalLevel: Int @default(1)`
+        *   `finalMight: Int`
+        *   `finalAgility: Int`
+        *   `finalCharisma: Int`
+        *   `finalIntelligence: Int`
+        *   `finalPrimeModifierValue: Int`
+        *   `finalPrimeModifierAttribute: String`
+        *   `finalCombatMastery: Int @default(1)`
+        *   `finalSaveMasteryMight: Int`
+        *   `finalSaveMasteryAgility: Int`
+        *   `finalSaveMasteryCharisma: Int`
+        *   `finalSaveMasteryIntelligence: Int`
+        *   `finalHPMax: Int`
+        *   `finalSPMax: Int`
+        *   `finalMPMax: Int`
+        *   `finalPD: Int`
+        *   `finalAD: Int`
+        *   `finalPDR: String?`
+        *   `finalEDR: String?`
+        *   `finalMDR: String?`
+        *   `finalSaveDC: Int`
+        *   `finalDeathThreshold: Int`
+        *   `finalMoveSpeed: Int`
+        *   `finalJumpDistance: Int`
+        *   `finalRestPoints: Int`
+        *   `finalGritPoints: Int`
+        *   `finalInitiativeBonus: Int`
+        *   `skillsJson: String` // `[{ id: 'athletics', name: 'Athletics', masteryLevel: 'Novice', bonus: 2, attribute: 'Might' }, ...]`
+        *   `tradesJson: String` // `[{ id: 'alchemy', name: 'Alchemy', masteryLevel: 'Novice', bonus: 2, attribute: 'Intelligence' }, ...]`
+        *   `languagesJson: String` // `[{ id: 'common', name: 'Common', fluency: 'Fluent' }, ...]`
+        *   `ancestry1Name: String?`
+        *   `ancestry2Name: String?`
+        *   `selectedTraitsJson: String` // `[{ id: 'human_resolve', name: 'Human Resolve', cost: 1, description: '...', sourceAncestryName: 'Human' }, ...]`
+        *   `className: String`
+        *   `classFeaturesLvl1Json: String` // `[{ name: 'Rage', description: '...' }, { name: 'Sorcerous Origin', choice: 'Intuitive Magic', description: '...'}]`
+        *   `equipmentJson: String` // `[{ name: 'Longsword', type: 'Weapon', ... }, ...]`
     *   `createdAt`: DateTime `@default(now())`
     *   `updatedAt`: DateTime `@updatedAt`
 *   **Static Rule Data:**
@@ -117,3 +155,18 @@
 *   Interactive breadcrumb navigation (allowing edits to previous steps with full recalculation).
 *   Light Mode Theme & UI Theme Toggle.
 *   Different font classes for UI/Title.
+
+## Appendix: Static Rule Data Definition
+Detailed TypeScript interfaces for static rule data will be defined in `src/lib/rulesdata/types.ts`. Key interfaces include:
+
+*   `IAttributeData { id: 'might' | 'agility' | 'charisma' | 'intelligence'; name: string; description: string; derivedStats?: Array<{ statName: string; formula: string; }>; }`
+*   `ITraitEffect { type: string; target?: string; value?: any; condition?: string; userChoiceRequired?: { prompt: string; options?: string[] }; descriptionOverride?: string; }`
+*   `ITrait { id: string; name: string; description: string; cost: number; isMinor?: boolean; isNegative?: boolean; effects?: ITraitEffect[]; prerequisites?: any[]; }`
+*   `IAncestry { id: string; name: string; description: string; defaultTraitIds?: string[]; expandedTraitIds: string[]; }`
+*   `IClassFeatureChoiceOption { value: string; label: string; description?: string; }`
+*   `IClassFeatureChoice { id: string; prompt: string; type: 'select_one' | 'select_multiple'; maxSelections?: number; options: IClassFeatureChoiceOption[]; effectsOnChoice?: { [choiceValue: string]: ITraitEffect[] }; }`
+*   `IClassFeature { id: string; name: string; description: string; level: number; effects?: ITraitEffect[]; }`
+*   `IClassDefinition { id: string; name: string; ... baseHpContribution: number; startingSP: number; startingMP: number; skillPointGrantLvl1?: number; ... level1Features: IClassFeature[]; featureChoicesLvl1?: IClassFeatureChoice[]; ... }`
+*   `ISkillData { id: string; name: string; attributeAssociation: string; description: string; }`
+*   `ITradeData { id: string; name: string; attributeAssociation: string; description: string; tools?: string; }`
+*   `ILanguageData { id: string; name: string; type: string; }`
