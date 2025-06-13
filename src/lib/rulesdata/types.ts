@@ -20,6 +20,7 @@ export interface ITraitEffect {
   };
   descriptionOverride?: string; // Optional override for how this effect is described
   subFeature?: string; // Optional sub-feature identifier for complex effects
+  schools?: string[]; // Optional list of spell schools associated with the effect
 }
 
 // Interface for Traits
@@ -41,6 +42,11 @@ export interface IAncestry {
   description: string;
   defaultTraitIds?: string[]; // Traits automatically granted
   expandedTraitIds: string[]; // Traits available for selection
+  origin?: { // Optional origin property for ancestries with specific origins (e.g., Dragonborn, Fiendborn, Beastborn)
+    prompt: string; // Prompt shown to the user for choosing an origin
+    options?: string[]; // Optional list of specific options for the origin
+  };
+  variantTraits?: ITrait[]; // Optional list of variant traits (e.g., Fallen Angelborn, Redeemed Fiendborn)
 }
 
 // Interface for Class Feature Choice Options

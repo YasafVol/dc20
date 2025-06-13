@@ -7,6 +7,7 @@ This document summarizes the current status of the project, including what has b
 - The memory bank documentation has been successfully updated to reflect the project plan detailed in the `projectPlan/` directory.
 - The core technologies, UI design principles, MVP feature scope, data modeling (Prisma schema), key backend logic, key frontend logic, and specific planning decisions for the Level 1 Character Creator MVP have been documented.
 - Detailed plans for Stage A (Attributes) and Stage B (Ancestry) of the character creation wizard have been incorporated into the documentation.
+- Static rule data in TypeScript files (`src/lib/rulesdata/`) has been implemented based on the DC20 Beta 0.9.5 rulebook.
 
 ## What's Left to Build
 
@@ -19,8 +20,6 @@ This document summarizes the current status of the project, including what has b
 - Implement the frontend component for displaying the finalized character sheet.
 - Implement the basic resume functionality using browser `localStorage`.
 - Configure TailwindCSS based on `tailwind.config.js`.
-- Implement static rule data in TypeScript files (`src/lib/rulesdata/`).
-
 ## Current Status
 
 The project is in the planning and initial documentation phase for the MVP of the Level 1 Character Creator. The core requirements, scope, and technical approach are defined. Detailed plans for the first two stages of the wizard are documented. The next steps involve translating these plans into code, starting with Stage A.

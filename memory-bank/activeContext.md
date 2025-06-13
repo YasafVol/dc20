@@ -8,7 +8,9 @@ The current focus is on implementing the core features defined in the MVP, speci
 
 ## Recent Changes
 
-The memory bank documentation has been updated based on the detailed planning documents found in the `projectPlan/` directory (`mvp.md`, `stage1.md`, `stage2.md`). This includes:
+The static rule data files (`src/lib/rulesdata/*.ts`) have been populated with detailed information for attributes, ancestries, classes, skills, traits, languages, and trades based on the DC20 Beta 0.9.5 rulebook. This completes a major step in preparing the necessary data for the Character Creation Wizard.
+
+The memory bank documentation has also been updated based on the detailed planning documents found in the `projectPlan/` directory (`mvp.md`, `stage1.md`, `stage2.md`). This includes:
 - Defining the specific scope and features for the MVP (Stages A, B, C).
 - Detailing the required UI components, internal state, functions, and logic for Stage A (Attributes) and Stage B (Ancestry).
 - Outlining the backend API endpoints/Form Actions needed for stages A and B, including validation requirements.

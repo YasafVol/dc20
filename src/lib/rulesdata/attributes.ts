@@ -7,7 +7,7 @@ export const attributesData: IAttributeData[] = [
 {
   id: 'might',
   name: 'Might',
-  description: '[Extract description for Might from DC20 p.9]',
+  description: 'Your Strength of Body.',
   derivedStats: [ // Examples, verify/adjust based on actual rules for each attribute
     { statName: 'Part of Area Defense calculation', formula: 'AD = 8 + CM + Might + Charisma + Bonuses' },
     { statName: 'Contributes to Max HP', formula: 'Max HP = Class HP + Might + Ancestry HP' }
@@ -16,7 +16,7 @@ export const attributesData: IAttributeData[] = [
 {
   id: 'agility',
   name: 'Agility',
-  description: '[Extract description for Agility from DC20 p.9]',
+  description: 'Your Balance, Nimbleness, and Dexterity.',
   derivedStats: [
     { statName: 'Part of Precision Defense calculation', formula: 'PD = 8 + CM + Agility + Intelligence + Bonuses' },
     { statName: 'Determines Jump Distance', formula: 'Jump Distance = Agility (min 1)' },
@@ -26,7 +26,7 @@ export const attributesData: IAttributeData[] = [
 {
   id: 'charisma',
   name: 'Charisma',
-  description: '[Extract description for Charisma from DC20 p.9]',
+  description: 'Your Charm, Presence, Persuasiveness, and Force of Will.',
   derivedStats: [
     { statName: 'Part of Area Defense calculation', formula: 'AD = 8 + CM + Might + Charisma + Bonuses' },
     { statName: 'Determines Grit Points', formula: 'Grit Points = 2 + Charisma' }
@@ -35,7 +35,7 @@ export const attributesData: IAttributeData[] = [
 {
   id: 'intelligence',
   name: 'Intelligence',
-  description: '[Extract description for Intelligence from DC20 p.9]',
+  description: 'Your Reasoning, Understanding, and Wisdom.',
   derivedStats: [
     { statName: 'Part of Precision Defense calculation', formula: 'PD = 8 + CM + Agility + Intelligence + Bonuses' },
     { statName: 'Determines Base Skill Points', formula: 'Skill Points = 5 + Intelligence' }
