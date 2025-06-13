@@ -27,7 +27,6 @@ The project is in the planning and initial documentation phase for the MVP of th
 ## Known Issues
 
 - Stage C of the character creation wizard is not yet detailed in the planning documents.
-- The implementation of static rule data in TypeScript files needs to be completed.
 - The attribute overflow helper panel logic in Stage B requires careful implementation and testing to ensure correct attribute reallocation and validation.
 
 ## Evolution of Project Decisions

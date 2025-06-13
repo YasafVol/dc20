@@ -112,6 +112,5 @@ export const ancestriesData: IAncestry[] = [
       prompt: 'Choose a type of Beast you are modeled after:',
       options: [], // Options are open-ended, based on GM/player choice
     },
-    defaultTraitIds: [], // Explicitly no default traits
   },
 ];

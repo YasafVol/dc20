@@ -62,7 +62,11 @@ export const sorcererClass: IClassDefinition = {
   baseHpContribution: 8, // From class table p.149 Lvl 1 HP
   startingSP: 0,
   startingMP: 6, // From class table p.149 Lvl 1 MP
+  skillPointGrantLvl1: 0, // From class table p.149
+  tradePointGrantLvl1: 0, // From class table p.149
   combatTraining: ['Light Armor'], // From p.149 "Sorcerer Spellcasting Path"
+  maneuversKnownLvl1: 0, // From class table p.149
+  techniquesKnownLvl1: 0, // From class table p.149
   cantripsKnownLvl1: 2, // From class table p.149
   spellsKnownLvl1: 3,   // From class table p.149
   saveDCBase: 8, // From p.149 "Save DC" - 8
