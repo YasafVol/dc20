@@ -16,6 +16,7 @@
     "build": "vite build"
   },
   "dependencies": {
+    "@melt-ui/svelte": "^0.86.6",
     "@prisma/client": "^6.7.0"
   }
 }
