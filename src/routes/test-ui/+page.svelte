@@ -6,3 +6,22 @@
   on:click={() => alert('Styled HTML button works!')}>
   Test Styled Button
 </button>
+
+<script lang="ts">
+  import { createCollapsible, melt } from '@melt-ui/svelte';
+  const {
+    elements: { root, content, trigger },
+    states: { open },
+  } = createCollapsible();
+</script>
+
+<div use:melt={$root} class="mt-4 p-2 border border-purple-primary rounded">
+  <button use:melt={$trigger} class="p-2 bg-purple-primary text-light-text-primary rounded w-full text-left">
+    Collapsible Trigger (Click to {$open ? 'Close' : 'Open'})
+  </button>
+  {#if $open}
+    <div use:melt={$content} class="p-2 mt-2 bg-dark-bg-secondary text-light-text-primary rounded">
+      Collapsible Content - Now Visible!
+    </div>
+  {/if}
+</div>
