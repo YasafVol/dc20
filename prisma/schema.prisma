@@ -20,6 +20,7 @@ model CharacterInProgress {
   attribute_charisma   Int    @default(-2)
   attribute_intelligence Int  @default(-2)
   pointsSpent          Int    @default(0) // Points spent in point buy
+  currentStep          Int    @default(1) // Current stage in the wizard (1 = Stage A, 2 = Stage B, etc.)
 
   // Stage B: Ancestry
   ancestry1Id          String? // ID of the first ancestry

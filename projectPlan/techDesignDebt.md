@@ -97,3 +97,21 @@ Each entry should ideally cover:
 *   **Status:** Open (For awareness/documentation update).
 
 ---
+
+### TD-005: Melt UI SSR Compatibility Issue with Wrapped Components
+*   **Date Identified:** 2025-06-19
+*   **Area/Component:** Melt UI Wrapper Components (`src/lib/components/ui/`), SvelteKit SSR.
+*   **Issue Description:** Attempting to wrap Melt UI primitives (specifically `RadioGroupPrimitive`) in custom Svelte components and import them via `$lib/components/ui/` paths results in a `TypeError: Cannot read properties of undefined (reading 'Root')` during SvelteKit's server-side rendering (SSR). This indicates that the Melt UI primitive object is `undefined` in the SSR environment when accessed at the module level within the wrapper component's script or index file.
+*   **Current Approach/Decision:** Defer full Melt UI integration for components exhibiting this SSR issue (like RadioGroup). Implement the UI for Stage A using standard HTML elements (`<button>`, `<input>`, `<label>`, `<input type="radio">`) and Svelte reactivity, applying styling directly via TailwindCSS classes.
+*   **Rationale for Current Approach:** Allows progress on the core character creation functionality (Stage A UI and backend) without being blocked by the Melt UI SSR compatibility issue. Provides a functional UI using standard web technologies.
+*   **Identified Limitations/Impact:**
+    *   Does not leverage Melt UI's accessibility features and primitive logic for the affected components in the initial implementation.
+    *   Requires manual implementation of behaviors that Melt UI primitives would normally provide (e.g., keyboard navigation, ARIA attributes for radio groups).
+    *   The UI components in `src/lib/components/ui/` that were intended as wrappers for Melt UI primitives are currently incomplete or non-functional due to this issue.
+*   **Proposed Future Solution/Refinement:**
+    1.  Investigate the root cause of the Melt UI SSR issue in the SvelteKit environment. This may involve consulting Melt UI documentation, community forums, or experimenting with different import/initialization patterns for SSR.
+    2.  Once a solution or workaround is found, refactor the affected UI wrapper components (`src/lib/components/ui/`) to correctly integrate the Melt UI primitives in an SSR-compatible manner.
+    3.  Update the Stage A Svelte component (and any future components) to use the refactored Melt UI wrapper components.
+    4.  Ensure accessibility features provided by Melt UI are correctly implemented in the wrappers.
+*   **Priority:** Medium (Impacts accessibility and consistency of UI component library usage).
+*   **Status:** Open
