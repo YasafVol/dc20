@@ -33,6 +33,7 @@ export interface ITrait {
   isNegative?: boolean; // True if this is a Negative Trait (grants points)
   effects?: ITraitEffect[]; // Array of effects the trait grants
   prerequisites?: any[]; // Optional prerequisites for taking this trait
+  sourceAncestryId?: string; // ID of the ancestry this trait belongs to (for combined lists)
 }
 
 // Interface for Ancestries
