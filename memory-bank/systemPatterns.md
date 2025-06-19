@@ -18,7 +18,7 @@ This document outlines the system architecture, key technical decisions, and des
 ## Technical Decisions
 
 - **SvelteKit:** Chosen for its full-stack capabilities, allowing for a unified development experience.
-- **Melt UI:** Selected for providing accessible, unstyled UI primitives that can be easily styled with TailwindCSS.
+- **Melt UI:** Selected for providing accessible, unstyled UI primitives that can be easily styled with TailwindCSS. Requires the `@melt-ui/pp` preprocessor to be configured in `svelte.config.js` for its `use:melt` action to function correctly.
 - **TailwindCSS:** Chosen for its utility-first approach to styling, enabling rapid UI development and consistency with the dark mode theme.
 - **Prisma:** Selected as the ORM for its ease of use and type safety with TypeScript.
 - **Static Rule Data:** Initially stored as TypeScript objects/arrays for simplicity and faster iteration during the MVP phase.

@@ -5,7 +5,8 @@ This document details the technologies, development setup, and technical constra
 ## Technologies Used
 
 - **Framework:** SvelteKit (Full-stack JavaScript/TypeScript)
-- **UI Primitives:** Melt UI (Primary), potentially `shadcn-svelte` (using Bits UI) / Bits UI as fallback.
+- **UI Primitives:** Melt UI (`@melt-ui/svelte`)
+    - Preprocessor: `@melt-ui/pp`
 - **Styling:** TailwindCSS
 - **ORM & Migrations:** Prisma
 - **Database:** PostgreSQL (hosted on Render Free tier)
@@ -14,10 +15,11 @@ This document details the technologies, development setup, and technical constra
 
 ## Development Setup
 
-- Requires Node.js and npm/yarn/pnpm.
+- Requires Node.js and npm.
+- SvelteKit project initialized manually by installing core dependencies (`@sveltejs/kit`, `@sveltejs/adapter-auto`, `@sveltejs/vite-plugin-svelte`, `vite`), creating configuration files (`svelte.config.js`, `vite.config.js`, `src/app.html`), and updating `package.json` (e.g., `"type": "module"`, scripts).
+- TailwindCSS setup integrated using `npx svelte-add@latest tailwindcss`, which configured `tailwind.config.js`, `postcss.config.js`, and `src/app.css`. Core Tailwind dependencies (`tailwindcss`, `postcss`, `autoprefixer`) installed.
+- Melt UI preprocessor (`@melt-ui/pp`) configured in `svelte.config.js` by importing `preprocessMeltUI` and adding it to the `preprocess` array (e.g., `preprocess: sequence([vitePreprocess(), preprocessMeltUI()])`).
 - Prisma CLI for database migrations.
-- Standard SvelteKit development environment.
-- TailwindCSS setup (configuration in `tailwind.config.js`).
 
 ## Technical Constraints
 
@@ -28,12 +30,12 @@ This document details the technologies, development setup, and technical constra
 
 ## Dependencies
 
-- SvelteKit
-- Melt UI
-- TailwindCSS
-- Prisma
-- PostgreSQL driver (e.g., `pg`)
-- Other standard SvelteKit dependencies.
+- **SvelteKit Core:** `@sveltejs/kit`, `@sveltejs/adapter-auto`, `@sveltejs/vite-plugin-svelte`, `vite`
+- **UI Primitives:** `@melt-ui/svelte`
+- **Melt UI Preprocessor:** `@melt-ui/pp`
+- **Styling (TailwindCSS):** `tailwindcss`, `postcss`, `autoprefixer`
+- **ORM & Database:** `prisma`, `@prisma/client`, `pg` (PostgreSQL driver - to be confirmed when DB work starts)
+- **Svelte Core:** `svelte`
 
 ## Tool Usage Patterns
 
@@ -41,3 +43,4 @@ This document details the technologies, development setup, and technical constra
 - Using TailwindCSS for styling components.
 - Using SvelteKit's built-in features for routing, API endpoints (Form Actions), and server-side logic.
 - Using Melt UI primitives for building accessible UI components.
+- Configuring and utilizing the Melt UI preprocessor (`@melt-ui/pp`) in `svelte.config.js` to enable `use:melt` action.

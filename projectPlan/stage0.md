@@ -77,15 +77,24 @@ The theme specifies the 'Inter' font, but we need to load it.
 2.  **Verification:** The text on the test page should now render using the Inter font. You can confirm this using your browser's developer tools by inspecting the `<h1>` element and checking its `font-family` CSS property.
 
 ### Step 5: Install and Verify Melt UI
-Finally, let's install the UI primitives library and verify the UI foundation.
+Finally, let's install the UI primitives library, set up its preprocessor, and verify the UI foundation.
 
 1.  **Install the package:**
     ```bash
-    npm install @melt-ui/svelte
+    npm install @melt-ui/svelte @melt-ui/pp
     ```
-    *(Note: While Melt UI provides builders for complex components, a dedicated `createButton` builder for simple buttons does not appear to be available in the current version. We will verify Melt UI's installation and the overall UI foundation using a standard HTML button styled with Tailwind.)*
 
-2.  **Verification:** We will verify that Melt UI has been installed (available for use with its other builders later) and that our styling setup works correctly with standard interactive elements. We will add a simple, functional, and styled HTML button to our test page.
+2.  **Set up the Preprocessor:**
+    *   Open `svelte.config.js`.
+    *   Import the preprocessor: `import { preprocessMeltUI } from '@melt-ui/pp';`
+    *   Ensure `sequence` is imported from `@sveltejs/kit/hooks`: `import { sequence } from '@sveltejs/kit/hooks';`
+    *   Add `preprocessMeltUI()` to the `preprocess` array, typically within `sequence()` if other preprocessors are present:
+        ```javascript
+        preprocess: sequence([vitePreprocess(), preprocessMeltUI()]),
+        ```
+    *   Restart the development server for the configuration changes to take effect.
+
+3.  **Verification:** We will verify that Melt UI has been installed and its preprocessor is working correctly, and that our styling setup works with Melt UI components. We will add a simple, functional, and styled Melt UI collapsible component to our test page.
     ```svelte
     <!-- src/routes/test-ui/+page.svelte -->
     <h1 class="text-2xl p-4 text-yellow-accent">UI Test Page</h1>
@@ -96,14 +105,35 @@ Finally, let's install the UI primitives library and verify the UI foundation.
       on:click={() => alert('Styled HTML button works!')}>
       Test Styled Button
     </button>
+
+    <script lang="ts">
+      import { createCollapsible, melt } from '@melt-ui/svelte';
+      const {
+        elements: { root, content, trigger },
+        states: { open },
+      } = createCollapsible();
+    </script>
+
+    <div use:melt={$root} class="mt-4 p-2 border border-purple-primary rounded">
+      <button use:melt={$trigger} class="p-2 bg-purple-primary text-light-text-primary rounded w-full text-left">
+        Collapsible Trigger (Click to {$open ? 'Close' : 'Open'})
+      </button>
+      {#if $open}
+        <div use:melt={$content} class="p-2 mt-2 bg-dark-bg-secondary text-light-text-primary rounded">
+          Collapsible Content - Now Visible!
+        </div>
+      {/if}
+    </div>
     ```
-    Navigate to the `/test-ui` page. You should see a styled orange button. Clicking it should trigger an alert. This proves that Melt UI is installed and that standard HTML elements can be styled correctly with our TailwindCSS theme, confirming the UI foundation is solid.
+    Navigate to the `/test-ui` page. You should see the styled HTML button and a new, styled collapsible component. Clicking the "Collapsible Trigger" should toggle the visibility of the styled "Collapsible Content". This proves that Melt UI is installed, its preprocessor is active, and its components can be styled correctly with our TailwindCSS theme, confirming the UI foundation is solid.
 
 ## IV. Stage Outcome
 Upon successful completion of all steps, we will have:
 1.  A functional SvelteKit project.
 2.  TailwindCSS installed and configured with our project's custom theme.
 3.  The Inter font loaded and applied.
-4.  Melt UI installed and the overall UI foundation verified.
+4.  Melt UI installed, its preprocessor configured, and the overall UI foundation verified.
+
+The project is now in a known-good state. The foundational UI layer is proven. We can now proceed with confidence to implement the application logic and components described in `projectPlan/stage1.md`.
 
 The project is now in a known-good state. The foundational UI layer is proven. We can now proceed with confidence to implement the application logic and components described in `projectPlan/stage1.md`.
