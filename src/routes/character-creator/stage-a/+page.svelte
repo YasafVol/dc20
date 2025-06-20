@@ -1,7 +1,7 @@
 <script lang="ts">
   import { writable, derived } from 'svelte/store';
   import { goto } from '$app/navigation'; // Import goto for navigation
-  import { characterInProgressStore, primeModifier, saveMasteries, gritPoints, jumpDistance, provisionalSkillPoints, getModifier, L1_COMBAT_MASTERY, combatMastery } from '$lib/stores/characterInProgressStore';
+  import { characterInProgressStore, primeModifier, saveMasteries, gritPoints, jumpDistance, provisionalSkillPoints, getModifier, L1_COMBAT_MASTERY, combatMastery, maxHP, areaDefense, precisionDefense, initiative } from '$lib/stores/characterInProgressStore';
   import { attributesData } from '$lib/rulesdata/attributes';
   // No Melt UI imports needed for standard HTML elements
 
@@ -291,18 +291,16 @@
   <div class="mt-6">
     <h3 class="text-lg font-medium mb-3">Provisional Base Stats (Finalized after Class & Equipment)</h3>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2 text-sm text-light-text-secondary">
-      {#each attributesData as attribute}
-        {#if attribute.derivedStats}
-          {#each attribute.derivedStats as derivedStat}
-            <p>{derivedStat.statName} = {derivedStat.formula}</p>
-          {/each}
-        {/if}
-      {/each}
-      <!-- Add other provisional formulas not tied to a single attribute -->
-      <p>Health Points = Class HP + Might ({currentAttributes.might}) + Ancestry HP</p>
-      <p>Stamina Points = Class SP</p>
-      <p>Mana Points = Class MP</p>
-      <!-- Removed hardcoded Precision Defense and Area Defense formulas as they are now sourced from attributesData -->
+      <!-- Display calculated stats with transparent formulas -->
+      <p>HP = Base(8) + Might({$characterInProgressStore.attribute_might}) + Ancestry(0) = {$maxHP}</p>
+      <p>SP = Class SP</p>
+      <p>MP = Class MP</p>
+      <p>PD = Base(8) + CM({$combatMastery}) + Agility({$characterInProgressStore.attribute_agility}) + Intelligence({$characterInProgressStore.attribute_intelligence}) + Bonuses(0) = {$precisionDefense}</p>
+      <p>AD = Base(8) + CM({$combatMastery}) + Might({$characterInProgressStore.attribute_might}) + Charisma({$characterInProgressStore.attribute_charisma}) + Bonuses(0) = {$areaDefense}</p>
+      <p>Initiative = CM({$combatMastery}) + Agility({$characterInProgressStore.attribute_agility}) = {$initiative}</p>
+      <p>Grit Points = Base(2) + Charisma({$characterInProgressStore.attribute_charisma}) = {$gritPoints}</p>
+      <p>Jump Distance = Agility({$characterInProgressStore.attribute_agility}) (min 1) = {$jumpDistance}</p>
+      <p>Base Skill Points = Base(5) + Intelligence({$characterInProgressStore.attribute_intelligence}) = {$provisionalSkillPoints}</p>
     </div>
   </div>
 

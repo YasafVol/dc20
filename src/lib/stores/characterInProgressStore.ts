@@ -174,4 +174,44 @@ export const ancestryPointsRemaining = derived(
   }
 );
 
-// TODO: Add more derived stores for other calculated stats (HP, SP, MP, Defenses, etc.)
+// Derived store for Max HP (Class HP + Might Modifier + Ancestry HP)
+export const maxHP = derived(
+  characterInProgressStore,
+  ($store) => {
+    const classHP = 8; // Hardcoded Class HP to 8 as per user feedback
+    const mightModifier = getModifier($store.attribute_might);
+    const ancestryHP = 0; // Assuming 0 for MVP until Ancestry HP is implemented
+    return classHP + mightModifier + ancestryHP;
+  }
+);
+
+// Derived store for Area Defense (8 + CM + Might Modifier + Charisma Modifier + Bonuses)
+export const areaDefense = derived(
+  [characterInProgressStore, combatMastery],
+  ([$store, $combatMastery]) => {
+    const mightModifier = getModifier($store.attribute_might);
+    const charismaModifier = getModifier($store.attribute_charisma);
+    const bonuses = 0; // Assuming 0 for MVP until bonuses are implemented
+    return 8 + $combatMastery + mightModifier + charismaModifier + bonuses;
+  }
+);
+
+// Derived store for Precision Defense (8 + CM + Agility Modifier + Intelligence Modifier + Bonuses)
+export const precisionDefense = derived(
+  [characterInProgressStore, combatMastery],
+  ([$store, $combatMastery]) => {
+    const agilityModifier = getModifier($store.attribute_agility);
+    const intelligenceModifier = getModifier($store.attribute_intelligence);
+    const bonuses = 0; // Assuming 0 for MVP until bonuses are implemented
+    return 8 + $combatMastery + agilityModifier + intelligenceModifier + bonuses;
+  }
+);
+
+// Derived store for Initiative (CM + Agility Modifier)
+export const initiative = derived(
+  [characterInProgressStore, combatMastery],
+  ([$store, $combatMastery]) => {
+    const agilityModifier = getModifier($store.attribute_agility);
+    return $combatMastery + agilityModifier;
+  }
+);
