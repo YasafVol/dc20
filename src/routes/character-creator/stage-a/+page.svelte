@@ -1,7 +1,7 @@
 <script lang="ts">
   import { writable, derived } from 'svelte/store';
   import { goto } from '$app/navigation'; // Import goto for navigation
-  import { characterInProgressStore, primeModifier, saveMasteries, gritPoints, jumpDistance, provisionalSkillPoints, getModifier, L1_COMBAT_MASTERY } from '$lib/stores/characterInProgressStore';
+  import { characterInProgressStore, primeModifier, saveMasteries, gritPoints, jumpDistance, provisionalSkillPoints, getModifier, L1_COMBAT_MASTERY, combatMastery } from '$lib/stores/characterInProgressStore';
   import { attributesData } from '$lib/rulesdata/attributes';
   // No Melt UI imports needed for standard HTML elements
 
@@ -263,6 +263,16 @@
   <!-- Key Calculated Stats Display -->
   <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
     <div class="p-4 bg-purple-primary/20 rounded-lg text-center">
+      <span class="text-lg text-light-text-primary">Level: </span>
+      <span class="text-2xl font-bold text-yellow-accent">{$characterInProgressStore.level}</span>
+      <!-- TODO: Add Tooltip -->
+    </div>
+    <div class="p-4 bg-purple-primary/20 rounded-lg text-center">
+      <span class="text-lg text-light-text-primary">Combat Mastery (CM): </span>
+      <span class="text-2xl font-bold text-yellow-accent">{$combatMastery}</span>
+      <!-- TODO: Add Tooltip -->
+    </div>
+    <div class="p-4 bg-purple-primary/20 rounded-lg text-center">
       <span class="text-lg text-light-text-primary">Prime Modifier: </span>
       <span class="text-2xl font-bold text-yellow-accent">
         {displayedPrimeModifierAttribute ? attributesData.find(a => a.id === displayedPrimeModifierAttribute.toLowerCase())?.name || displayedPrimeModifierAttribute : 'N/A'} ({displayedPrimeModifierValue})
@@ -292,8 +302,7 @@
       <p>Health Points = Class HP + Might ({currentAttributes.might}) + Ancestry HP</p>
       <p>Stamina Points = Class SP</p>
       <p>Mana Points = Class MP</p>
-      <p>Precision Defense (PD) = 8 + CM(+1) + Agility ({currentAttributes.agility}) + Intelligence ({currentAttributes.intelligence}) + Equip Bonuses</p>
-      <p>Area Defense (AD) = 8 + CM(+1) + Might ({currentAttributes.might}) + Charisma ({currentAttributes.charisma}) + Equip Bonuses</p>
+      <!-- Removed hardcoded Precision Defense and Area Defense formulas as they are now sourced from attributesData -->
     </div>
   </div>
 

@@ -55,6 +55,8 @@ export async function POST({ request }) {
           attribute_charisma,
           attribute_intelligence,
           pointsSpent, // Store points spent for consistency, though backend validates
+          level: 1, // Hardcoded to 1 for MVP
+          combatMastery: 1, // Calculated as half level rounded up (1 for Level 1)
           selectedTraitIds: JSON.stringify([]), // Initialize selected traits for Stage B
           selectedFeatureChoices: JSON.stringify([]), // Initialize selected feature choices
           currentStep: 1, // Mark Stage A as complete
@@ -70,6 +72,8 @@ export async function POST({ request }) {
           attribute_charisma,
           attribute_intelligence,
           pointsSpent,
+          level: 1, // Hardcoded to 1 for MVP
+          combatMastery: 1, // Calculated as half level rounded up (1 for Level 1)
           selectedTraitIds: JSON.stringify([]), // Initialize selected traits for Stage B
           selectedFeatureChoices: JSON.stringify([]), // Initialize selected feature choices
           currentStep: 1, // Mark Stage A as complete

@@ -12,6 +12,9 @@ interface CharacterInProgressStoreData extends CharacterInProgress {
   // Add temporary state for trait selection overflow
   overflowTraitId: string | null;
   overflowAttributeName: string | null;
+  // Add Level and Combat Mastery
+  level: number;
+  combatMastery: number; // Derived, but included in interface for clarity
 }
 
 // Initial state for the store, matching Prisma defaults and adding UI state
@@ -22,6 +25,10 @@ const initialCharacterInProgressState: CharacterInProgressStoreData = {
   attribute_charisma: -2,
   attribute_intelligence: -2,
   pointsSpent: 0,
+
+  // Core Stats
+  level: 1, // Default to Level 1 for MVP
+  combatMastery: 1, // Calculated: Math.ceil(level / 2)
 
   ancestry1Id: null,
   ancestry2Id: null,
@@ -55,9 +62,17 @@ export function getModifier(attributeScore: number | null | undefined): number {
 }
 
 // Constant for Level 1 Combat Mastery (DC20 p.22)
-export const L1_COMBAT_MASTERY = 1;
+export const L1_COMBAT_MASTERY = 1; // Keep for reference, but use derived store
 
 // --- Derived Stores ---
+
+// Derived store for Combat Mastery (half level rounded up)
+export const combatMastery = derived(
+  characterInProgressStore,
+  ($store) => {
+    return Math.ceil(($store.level ?? 1) / 2); // Default to level 1 if store.level is null/undefined
+  }
+);
 
 // Derived store for the Prime Modifier Value and Attribute
 export const primeModifier = derived(
@@ -96,19 +111,22 @@ export const primeModifier = derived(
 
 // Derived store for Save Masteries (DC20 p.22)
 export const saveMasteries = derived(
-  [characterInProgressStore, primeModifier],
-  ([$store, $primeModifier]) => {
+  [characterInProgressStore, primeModifier, combatMastery],
+  ([$store, $primeModifier, $combatMastery]) => {
     const primeModValue = $primeModifier.value;
     const primeModAttribute = $primeModifier.attribute;
 
     // Save Mastery = Combat Mastery + Attribute Modifier
     // If the attribute is the Prime Modifier, use the Prime Modifier value.
     // Otherwise, use the attribute's own modifier (which is the score itself).
+    // Use the derived combatMastery store
+    const currentCombatMastery = $combatMastery;
+
     return {
-      might: L1_COMBAT_MASTERY + (primeModAttribute === 'Might' ? primeModValue : getModifier($store.attribute_might)),
-      agility: L1_COMBAT_MASTERY + (primeModAttribute === 'Agility' ? primeModValue : getModifier($store.attribute_agility)),
-      charisma: L1_COMBAT_MASTERY + (primeModAttribute === 'Charisma' ? primeModValue : getModifier($store.attribute_charisma)),
-      intelligence: L1_COMBAT_MASTERY + (primeModAttribute === 'Intelligence' ? primeModValue : getModifier($store.attribute_intelligence)),
+      might: currentCombatMastery + (primeModAttribute === 'Might' ? primeModValue : getModifier($store.attribute_might)),
+      agility: currentCombatMastery + (primeModAttribute === 'Agility' ? primeModValue : getModifier($store.attribute_agility)),
+      charisma: currentCombatMastery + (primeModAttribute === 'Charisma' ? primeModValue : getModifier($store.attribute_charisma)),
+      intelligence: currentCombatMastery + (primeModAttribute === 'Intelligence' ? primeModValue : getModifier($store.attribute_intelligence)),
     };
   }
 );

@@ -22,6 +22,10 @@ model CharacterInProgress {
   pointsSpent          Int    @default(0) // Points spent in point buy
   currentStep          Int    @default(1) // Current stage in the wizard (1 = Stage A, 2 = Stage B, etc.)
 
+  // Core Stats
+  level                Int    @default(1)
+  combatMastery        Int    @default(1) // Calculated as half level rounded up
+
   // Stage B: Ancestry
   ancestry1Id          String? // ID of the first ancestry
   ancestry2Id          String? // ID of the second ancestry (for mixed ancestry)

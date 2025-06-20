@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { characterInProgressStore } from '$lib/stores/characterInProgressStore';
+    import { characterInProgressStore, primeModifier } from '$lib/stores/characterInProgressStore';
     import type { IAncestry, ITrait } from '$lib/rulesdata/types';
     import { ancestriesData } from '$lib/rulesdata/ancestries';
     import { traitsData as traits } from '$lib/rulesdata/traits'; // Assuming traits are in a separate file
@@ -333,9 +333,8 @@
             <p>Agility: <span class="font-bold">{$characterInProgressStore.attribute_agility}</span></p>
             <p>Charisma: <span class="font-bold">{$characterInProgressStore.attribute_charisma}</span></p>
             <p>Intellect: <span class="font-bold">{$characterInProgressStore.attribute_intelligence}</span></p>
-            <!-- TODO: Display derived stats -->
-            <!-- Example derived stat placeholder -->
-            <p class="col-span-2">Prime Modifier: <span class="font-bold text-yellow-accent">TODO</span></p>
+            <!-- Display derived stats -->
+            <p class="col-span-2">Prime Modifier: <span class="font-bold text-yellow-accent">{$primeModifier.attribute} ({$primeModifier.value >= 0 ? '+' : ''}{$primeModifier.value})</span></p>
         </div>
     </div>
 
