@@ -244,7 +244,7 @@
             <div class="flex-1">
                 <!-- Fixed A11y warning by associating label with input -->
                 <label class="block text-sm font-medium mb-1" for="ancestry1">Ancestry 1</label>
-                <select id="ancestry1" bind:value={selectedAncestry1_ID} class="p-2 border rounded w-full dark:bg-dark-bg-secondary dark:border-dark-border">
+                <select id="ancestry1" bind:value={selectedAncestry1_ID} class="p-2 border rounded w-full bg-dark-bg-secondary text-light-text-primary dark:border-dark-border text-purple-300">
                     <option value={null}>Select an ancestry</option>
                     {#if ancestries}
                         {#each ancestries as ancestry}
@@ -256,7 +256,7 @@
             <div class="flex-1">
                 <!-- Fixed A11y warning by associating label with input -->
                 <label class="block text-sm font-medium mb-1" for="ancestry2">Ancestry 2</label>
-                 <select id="ancestry2" bind:value={selectedAncestry2_ID} class="p-2 border rounded w-full dark:bg-dark-bg-secondary dark:border-dark-border">
+                 <select id="ancestry2" bind:value={selectedAncestry2_ID} class="p-2 border rounded w-full bg-dark-bg-secondary text-light-text-primary dark:border-dark-border text-purple-300">
                     <option value={null}>None</option>
                     {#if ancestries}
                         {#each ancestries as ancestry}
