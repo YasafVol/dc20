@@ -10,9 +10,14 @@ const POINT_BUY_BUDGET = 12;
 
 export async function POST({ request }) {
   try {
-    const { characterId, attribute_might, attribute_agility, attribute_charisma, attribute_intelligence } = await request.json();
+    const { characterId, finalName, attribute_might, attribute_agility, attribute_charisma, attribute_intelligence } = await request.json();
 
     // Backend Validation
+    if (!finalName || typeof finalName !== 'string' || finalName.trim().length === 0) {
+        return error(400, { message: 'Character name is required.' });
+    }
+    // Optional: Add length constraints or character restrictions for finalName
+
     const attributes = {
       might: attribute_might,
       agility: attribute_agility,
@@ -44,6 +49,7 @@ export async function POST({ request }) {
       updatedCharacter = await prisma.characterInProgress.update({
         where: { id: characterId },
         data: {
+          finalName: finalName.trim(), // Save character name
           attribute_might,
           attribute_agility,
           attribute_charisma,
@@ -58,6 +64,7 @@ export async function POST({ request }) {
       // Create new character progress (handles TD-002 for the first save)
       updatedCharacter = await prisma.characterInProgress.create({
         data: {
+          finalName: finalName.trim(), // Save character name
           attribute_might,
           attribute_agility,
           attribute_charisma,

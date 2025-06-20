@@ -1,8 +1,12 @@
 <script lang="ts">
   import { writable, derived } from 'svelte/store';
+  import { goto } from '$app/navigation'; // Import goto for navigation
   import { characterInProgressStore, primeModifier, saveMasteries, gritPoints, jumpDistance, provisionalSkillPoints, getModifier, L1_COMBAT_MASTERY } from '$lib/stores/characterInProgressStore';
   import { attributesData } from '$lib/rulesdata/attributes';
   // No Melt UI imports needed for standard HTML elements
+
+  // Local state for character name
+  let characterName: string = '';
 
   // Constants
   const POINT_BUY_BUDGET = 12;
@@ -72,6 +76,10 @@
   // Function to handle submitting Stage A data
   async function handleSubmitStageA() {
     // Frontend validation
+    if (!characterName.trim()) {
+        alert('Please enter a character name.');
+        return;
+    }
     if (pointsRemaining !== 0) {
       alert(`You must allocate exactly ${POINT_BUY_BUDGET} points. Points remaining: ${pointsRemaining}`);
       return;
@@ -81,6 +89,7 @@
     // Prepare data to send to backend
     const stageAData = {
       characterId: $characterInProgressStore.id, // Pass the current ID (might be null for new)
+      finalName: characterName.trim(), // Include character name
       attribute_might: $characterInProgressStore.attribute_might,
       attribute_agility: $characterInProgressStore.attribute_agility,
       attribute_charisma: $characterInProgressStore.attribute_charisma,
@@ -114,8 +123,8 @@
          // TODO: Also save characterId to localStorage for resume functionality (TD-002 related)
       }
 
-      // TODO: Navigate to the next stage (Stage B)
-      // Example: goto('/character-creator/stage-b');
+      // Navigate to the next stage (Stage B)
+      goto('/character-creator/stage-b');
 
     } catch (error) {
       console.error('Error submitting Stage A data:', error);
@@ -155,6 +164,18 @@
 <!-- UI Structure -->
 <div class="p-6 md:p-8 bg-dark-bg-secondary rounded-lg shadow-xl text-light-text-primary">
   <h2 class="text-2xl font-semibold mb-6 text-yellow-accent">Step 1: Core Attributes & Foundational Stats</h2>
+
+  <!-- Character Name Input -->
+  <div class="mb-6">
+    <label for="characterName" class="block text-lg font-medium mb-2">Character Name</label>
+    <input
+      type="text"
+      id="characterName"
+      bind:value={characterName}
+      class="w-full p-2 border rounded bg-dark-bg-primary text-light-text-primary border-dark-border"
+      placeholder="Enter your character's name"
+    />
+  </div>
 
   <!-- Point Buy Allocation Section -->
   <div class="mb-6">
