@@ -12,8 +12,8 @@
     let availableTraitsForSelection: ITrait[] = []; // Reactive/Derived Array
     let currentSelectedTraits: ITrait[] = []; // Array of Trait Objects
     const ancestryPointsBudget: number = 5;
-    let pointsFromNegativeTraits: number = 0; // Reactive/Derived Number
-    $: totalAncestryPointsAvailable = ancestryPointsBudget + pointsFromNegativeTraits; // Reactive/Derived Number
+    // Removed pointsFromNegativeTraits as it's no longer needed for total budget calculation
+    $: totalAncestryPointsAvailable = ancestryPointsBudget; // Always 5
     $: ancestryPointsSpent = currentSelectedTraits.reduce((sum, trait) => sum + trait.cost, 0); // Reactive/Derived Number
     $: ancestryPointsRemaining = totalAncestryPointsAvailable - ancestryPointsSpent; // Reactive/Derived Number
 
@@ -212,16 +212,8 @@
             }
         }
 
-
-        // Calculate pointsFromNegativeTraits based on currentSelectedTraits
-        pointsFromNegativeTraits = currentSelectedTraits
-            .filter(trait => trait.cost < 0)
-            .reduce((sum, trait) => sum + Math.abs(trait.cost), 0);
-        // Enforce max +2 point gain from Negative Traits
-        if (pointsFromNegativeTraits > 2) {
-            pointsFromNegativeTraits = 2;
-            // TODO: Add UI feedback that the limit is reached
-        }
+        // The calculation for pointsFromNegativeTraits is now done locally within handleTraitSelection
+        // The enforcement of the max +2 point gain from Negative Traits is also handled there.
 
         // TODO: Implement logic to enforce other trait rules (max 2 ancestries, 1 Minor Trait, max +2 points from Negative Traits, total 5 points used)
         // This will likely involve checks within handleTraitSelection and potentially disabling UI elements
@@ -264,8 +256,24 @@
                         {/each}
                     {/if}
                 </select>
-            </div>
-        </div>
+    </div>
+</div>
+
+<style lang="postcss">
+    /* Apply dark background to select elements and options */
+    select.bg-dark-bg-secondary {
+        /* Avoid @apply to prevent circular dependency error during SSR */
+        background-color: #1f2937; /* Using a placeholder dark grey color */
+        @apply text-purple-300; /* Apply text color using @apply */
+    }
+
+    /* Attempt to style dropdown options - browser support varies */
+    select.bg-dark-bg-secondary option {
+        /* Avoid @apply to prevent circular dependency error during SSR */
+        background-color: #1f2937; /* Using a placeholder dark grey color */
+        @apply text-light-text-primary; /* Use light text for options */
+    }
+</style>
     </div>
 
     {#if selectedAncestry1_ID}
