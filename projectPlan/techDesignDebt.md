@@ -108,6 +108,7 @@ Each entry should ideally cover:
     *   Does not leverage Melt UI's accessibility features and primitive logic for the affected components in the initial implementation.
     *   Requires manual implementation of behaviors that Melt UI primitives would normally provide (e.g., keyboard navigation, ARIA attributes for radio groups).
     *   The UI components in `src/lib/components/ui/` that were intended as wrappers for Melt UI primitives are currently incomplete or non-functional due to this issue.
+    *   This issue was initially logged as TD-006 and TD-007 by the user.
 *   **Proposed Future Solution/Refinement:**
     1.  Investigate the root cause of the Melt UI SSR issue in the SvelteKit environment. This may involve consulting Melt UI documentation, community forums, or experimenting with different import/initialization patterns for SSR.
     2.  Once a solution or workaround is found, refactor the affected UI wrapper components (`src/lib/components/ui/`) to correctly integrate the Melt UI primitives in an SSR-compatible manner.
@@ -115,3 +116,16 @@ Each entry should ideally cover:
     4.  Ensure accessibility features provided by Melt UI are correctly implemented in the wrappers.
 *   **Priority:** Medium (Impacts accessibility and consistency of UI component library usage).
 *   **Status:** Open
+
+---
+
+### TD-006: Persistent Environmental/TypeScript Errors
+*   **Date Identified:** 2025-06-20
+*   **Area/Component:** SvelteKit Development Environment, `src/routes/character-creator/stage-b/+page.svelte`, `src/lib/stores/characterInProgressStore.ts`.
+*   **Issue Description:** Encountered persistent TypeScript errors (initially logged by the user as TD-006 and TD-007) that seemed related to tooling or environment setup, including issues with Svelte file indexing, `./$types` imports, and implicit `any` types. Additional TypeScript errors related to template syntax and store initialization were also encountered during troubleshooting. These errors prevented successful file modifications using `replace_in_file`.
+*   **Current Approach/Decision:** Performed a comprehensive environment reset (deleted `.svelte-kit`, `node_modules`, `package-lock.json`, reinstalled dependencies, and restarted the dev server). Addressed specific syntax errors in the Svelte template and type errors in the component script and store related to indexing and store initialization by modifying the code directly.
+*   **Rationale for Current Approach:** Necessary steps to resolve environmental and code-level issues blocking development progress. The environment reset is a standard troubleshooting step for tooling-related problems in SvelteKit. Code modifications were required to fix specific syntax and type mismatches identified by the TypeScript compiler.
+*   **Identified Limitations/Impact:** The root cause of the initial environmental/tooling errors (TD-006, TD-007) is not definitively known, although the environment reset and type regeneration likely cleared any corrupted build artifacts or caches. The specific template syntax and type issues were addressed, but similar issues could arise if complex TypeScript/template interactions are not carefully managed.
+*   **Proposed Future Solution/Refinement:** Monitor the development environment for the recurrence of similar persistent errors. If they reappear, further investigation into the SvelteKit build process, TypeScript configuration, and potential interactions with other dependencies may be required. Ensure careful attention to TypeScript compatibility when writing Svelte template logic.
+*   **Priority:** High (Initially blocked development).
+*   **Status:** Resolved.

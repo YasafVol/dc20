@@ -1,8 +1,10 @@
 <script lang="ts">
     import { characterInProgressStore } from '$lib/stores/characterInProgressStore';
     import type { IAncestry, ITrait } from '$lib/rulesdata/types';
-    import { ancestriesData as ancestries } from '$lib/rulesdata/ancestries';
+    import { ancestriesData } from '$lib/rulesdata/ancestries';
     import { traitsData as traits } from '$lib/rulesdata/traits'; // Assuming traits are in a separate file
+
+    const ancestries = ancestriesData; // Assign to a local variable for consistency
 
     // II. B. Internal State (Reactive Svelte Variables):
     let selectedAncestry1_ID: string | null = null;
@@ -32,11 +34,6 @@
     function getAncestryName(id: string): string {
         const ancestry = ancestries.find(a => a.id === id);
         return ancestry ? ancestry.name : 'Unknown Ancestry';
-    }
-
-    function getTraitsForAncestry(ancestryId: string): ITrait[] {
-        // Assuming traits have a sourceAncestryId property
-        return traits.filter(trait => trait.sourceAncestryId === ancestryId);
     }
 
     // Corrected parameter type to match the keys of tempAttributesForReallocation
@@ -184,16 +181,37 @@
         }
     }
 
+    interface TraitsByAncestry {
+        ancestry: IAncestry;
+        traits: ITrait[];
+    }
+    let availableTraitsByAncestry: TraitsByAncestry[] = []; // Reactive/Derived Array
 
     $: {
-        // Calculate availableTraitsForSelection based on selectedAncestry1_ID and selectedAncestry2_ID
-        availableTraitsForSelection = [];
-        if (selectedAncestry1_ID) {
-            availableTraitsForSelection = [...availableTraitsForSelection, ...getTraitsForAncestry(selectedAncestry1_ID)];
+        // Calculate availableTraitsByAncestry based on selectedAncestry1_ID and selectedAncestry2_ID
+        availableTraitsByAncestry = [];
+
+        // Ensure ancestries data is loaded before processing
+        if (ancestries && (selectedAncestry1_ID !== null || selectedAncestry2_ID !== null)) {
+            const selectedAncestry1 = ancestries.find(a => a.id === selectedAncestry1_ID);
+            const selectedAncestry2 = ancestries.find(a => a.id === selectedAncestry2_ID);
+
+            if (selectedAncestry1) {
+                const traits1 = [...(selectedAncestry1.defaultTraitIds || []), ...(selectedAncestry1.expandedTraitIds || [])]
+                    .map(traitId => traits.find(t => t.id === traitId))
+                    .filter((t): t is ITrait => t !== undefined);
+                availableTraitsByAncestry = [...availableTraitsByAncestry, { ancestry: selectedAncestry1, traits: traits1 }];
+            }
+
+            // Add second ancestry traits only if different from the first
+            if (selectedAncestry2 && selectedAncestry2_ID !== selectedAncestry1_ID) {
+                 const traits2 = [...(selectedAncestry2.defaultTraitIds || []), ...(selectedAncestry2.expandedTraitIds || [])]
+                    .map(traitId => traits.find(t => t.id === traitId))
+                    .filter((t): t is ITrait => t !== undefined);
+                availableTraitsByAncestry = [...availableTraitsByAncestry, { ancestry: selectedAncestry2, traits: traits2 }];
+            }
         }
-        if (selectedAncestry2_ID && selectedAncestry2_ID !== null) {
-             availableTraitsForSelection = [...availableTraitsForSelection, ...getTraitsForAncestry(selectedAncestry2_ID)];
-        }
+
 
         // Calculate pointsFromNegativeTraits based on currentSelectedTraits
         pointsFromNegativeTraits = currentSelectedTraits
@@ -210,94 +228,107 @@
     }
 
     // TODO: Implement UI Feedback for Trait Rules (disable selections, messages)
-    // TODO: Implement UI Feedback for Trait Rules (disable selections, messages)
 
 </script>
 
-<!-- II. C. UI Structure & Components (Melt UI + TailwindCSS): -->
-
 <!-- 1. Main Container & Stage Title: -->
-<div class="container mx-auto p-4">
-    <h2 class="text-2xl font-bold mb-4">Step 2: Ancestry Choices</h2>
+<div class="p-6 md:p-8 bg-dark-bg-secondary rounded-lg shadow-xl text-light-text-primary">
+    <h2 class="text-2xl font-semibold mb-6 text-yellow-accent">Step 2: Ancestry Choices</h2>
 
     <!-- 2. Ancestry Selection Section: -->
     <div class="mb-6">
-        <h3 class="text-xl font-semibold mb-3">Choose Your Ancestry (Up to 2)</h3>
+        <h3 class="text-lg font-medium mb-2">Choose Your Ancestry (Up to 2)</h3>
         <!-- TODO: Implement Ancestry Selection using Melt UI Select or custom SelectionCards -->
         <!-- Using standard select for now due to Melt UI SSR issues -->
         <div class="flex gap-4">
-            <div>
+            <div class="flex-1">
                 <!-- Fixed A11y warning by associating label with input -->
                 <label class="block text-sm font-medium mb-1" for="ancestry1">Ancestry 1</label>
-                <select id="ancestry1" bind:value={selectedAncestry1_ID} class="p-2 border rounded dark:bg-dark-bg-secondary dark:border-dark-border">
+                <select id="ancestry1" bind:value={selectedAncestry1_ID} class="p-2 border rounded w-full dark:bg-dark-bg-secondary dark:border-dark-border">
                     <option value={null}>Select an ancestry</option>
-                    {#each ancestries as ancestry}
-                        <option value={ancestry.id}>{ancestry.name}</option>
-                    {/each}
+                    {#if ancestries}
+                        {#each ancestries as ancestry}
+                            <option value={ancestry.id}>{ancestry.name}</option>
+                        {/each}
+                    {/if}
                 </select>
             </div>
-            <div>
+            <div class="flex-1">
                 <!-- Fixed A11y warning by associating label with input -->
                 <label class="block text-sm font-medium mb-1" for="ancestry2">Ancestry 2</label>
-                 <select id="ancestry2" bind:value={selectedAncestry2_ID} class="p-2 border rounded dark:bg-dark-bg-secondary dark:border-dark-border">
+                 <select id="ancestry2" bind:value={selectedAncestry2_ID} class="p-2 border rounded w-full dark:bg-dark-bg-secondary dark:border-dark-border">
                     <option value={null}>None</option>
-                    {#each ancestries as ancestry}
-                        <option value={ancestry.id}>{ancestry.name}</option>
-                    {/each}
+                    {#if ancestries}
+                        {#each ancestries as ancestry}
+                            <option value={ancestry.id}>{ancestry.name}</option>
+                        {/each}
+                    {/if}
                 </select>
             </div>
         </div>
     </div>
 
-    <!-- 3. Ancestry Points & Trait Allocation Section: -->
-    <div class="mb-6">
-        <h3 class="text-xl font-semibold mb-3">Ancestry Traits</h3>
-        <p class="mb-4">Ancestry Points: {ancestryPointsRemaining} / {totalAncestryPointsAvailable} Remaining</p>
+    {#if selectedAncestry1_ID}
+        <!-- 3. Ancestry Points & Trait Allocation Section: -->
+        <div class="mb-6">
+            <h3 class="text-lg font-medium mb-2">Ancestry Traits</h3>
+            <p class="mb-4 text-light-text-secondary">Ancestry Points: <span class="font-bold">{ancestryPointsRemaining}</span> / {totalAncestryPointsAvailable} Remaining</p>
 
-        <!-- Conditional Trait Listing for selected ancestries -->
-        {#if availableTraitsForSelection.length > 0}
-            <ul>
-                {#each availableTraitsForSelection as trait}
-                    <li class="flex items-center justify-between p-2 my-1 rounded dark:hover:bg-dark-bg-primary">
-                        <!-- Add disabled state based on rules -->
-                        <input type="checkbox" on:change={() => handleTraitSelection(trait)} checked={currentSelectedTraits.some(t => t.id === trait.id)} disabled={
-                            // Disable if already selected (handled by checked)
-                            // Disable if not enough points and not a negative trait
-                            (trait.cost > 0 && ancestryPointsRemaining < trait.cost && !currentSelectedTraits.some(t => t.id === trait.id)) ||
-                            // Disable if Minor Trait limit reached and this is a Minor Trait
-                            (trait.isMinor && currentSelectedTraits.filter(t => t.isMinor).length >= 1 && !currentSelectedTraits.some(t => t.id === trait.id)) ||
-                            // Disable if Negative Trait point gain limit reached and this is a Negative Trait
-                            (trait.cost < 0 && currentSelectedTraits.filter(t => t.cost < 0).reduce((sum, t) => sum + Math.abs(t.cost), 0) >= 2 && !currentSelectedTraits.some(t => t.id === trait.id))
-                        } />
-                        <span class="font-medium {currentSelectedTraits.some(t => t.id === trait.id) ? 'text-yellow-accent' : ''}">
-                            {trait.name} (Cost: {trait.cost})
-                        </span>
-                        <!-- TODO: Add Tooltip for description -->
-                    </li>
+            <!-- Conditional Trait Listing for selected ancestries -->
+            {#if availableTraitsByAncestry.length > 0}
+                {#each availableTraitsByAncestry as ancestryGroup}
+                    <h4 class="text-lg font-semibold mt-4 mb-2">{ancestryGroup.ancestry.name} Traits</h4>
+                    {#if ancestryGroup.traits.length > 0}
+                        <ul class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {#each ancestryGroup.traits as trait}
+                                <li class="flex items-center justify-between p-3 my-1 rounded border border-dark-border dark:hover:bg-dark-bg-primary transition-colors duration-200">
+                                    <!-- Add disabled state based on rules -->
+                                    <input type="checkbox" on:change={() => handleTraitSelection(trait)} checked={currentSelectedTraits.some(t => t.id === trait.id)} disabled={
+                                        // Disable if not enough points and not a negative trait
+                                        (trait.cost > 0 && ancestryPointsRemaining < trait.cost && !currentSelectedTraits.some(t => t.id === trait.id)) ||
+                                        // Disable if Minor Trait limit reached and this is a Minor Trait
+                                        (trait.isMinor && currentSelectedTraits.filter(t => t.isMinor).length >= 1 && !currentSelectedTraits.some(t => t.id === trait.id)) ||
+                                        // Disable if Negative Trait point gain limit reached and this is a Negative Trait
+                                        (trait.cost < 0 && currentSelectedTraits.filter(t => t.cost < 0).reduce((sum, t) => sum + Math.abs(t.cost), 0) >= 2 && !currentSelectedTraits.some(t => t.id === trait.id))
+                                    } class="form-checkbox h-5 w-5 text-purple-primary rounded focus:ring-purple-primary dark:bg-dark-bg-secondary dark:border-dark-border" />
+                                    <span class="font-medium flex-1 ml-3 {currentSelectedTraits.some(t => t.id === trait.id) ? 'text-yellow-accent' : ''}">
+                                        {trait.name} (Cost: {trait.cost})
+                                    </span>
+                                    <!-- TODO: Add Tooltip for description -->
+                                </li>
+                            {/each}
+                        </ul>
+                    {:else}
+                        <p>No traits available for {ancestryGroup.ancestry.name}.</p>
+                    {/if}
                 {/each}
-            </ul>
-        {:else}
-            <p>Select one or two ancestries to see available traits.</p>
-        {/if}
-    </div>
+            {:else}
+                <p>Select one or two ancestries to see available traits.</p>
+            {/if}
+        </div>
 
-    <!-- 4. Chosen Traits Summary: -->
-    <div class="mt-4 p-3 bg-dark-bg-primary rounded-md mb-6">
-        <h3 class="text-xl font-semibold mb-3">Selected Traits</h3>
+        <!-- 4. Chosen Traits Summary: -->
+        <div class="mt-4 p-4 bg-dark-bg-primary rounded-md shadow-sm mb-6">
+        <h3 class="text-lg font-medium mb-2">Selected Traits</h3>
         {#each currentSelectedTraits as trait}
-            <p>{trait.name} (Cost: {trait.cost}){trait.sourceAncestryId ? ' from ' + getAncestryName(trait.sourceAncestryId) : ''}</p>
+            <p class="text-light-text-primary">{trait.name} (Cost: {trait.cost}){trait.sourceAncestryId && ancestries.find(a => a.id === trait.sourceAncestryId) ? ' from ' + getAncestryName(trait.sourceAncestryId) : ''}</p>
         {/each}
     </div>
+    {/if}
 
     <!-- 5. Read-Only Display of Updated Stage A Stats: -->
-    <div class="mb-6">
-        <h3 class="text-xl font-semibold mb-3">Current Core Stats (Reflecting Ancestry Choices)</h3>
+    <div class="mb-6 p-4 bg-dark-bg-primary rounded-md shadow-sm">
+        <h3 class="text-lg font-medium mb-2">Current Core Stats (Reflecting Ancestry Choices)</h3>
         <!-- Display stats from $characterInProgressStore.attributesFromStageA and derived stats -->
-        <p>Might: {$characterInProgressStore.attribute_might}</p>
-        <p>Agility: {$characterInProgressStore.attribute_agility}</p>
-        <p>Charisma: {$characterInProgressStore.attribute_charisma}</p>
-        <p>Intellect: {$characterInProgressStore.attribute_intelligence}</p>
-        <!-- TODO: Display derived stats -->
+        <div class="grid grid-cols-2 gap-4">
+            <p>Might: <span class="font-bold">{$characterInProgressStore.attribute_might}</span></p>
+            <p>Agility: <span class="font-bold">{$characterInProgressStore.attribute_agility}</span></p>
+            <p>Charisma: <span class="font-bold">{$characterInProgressStore.attribute_charisma}</span></p>
+            <p>Intellect: <span class="font-bold">{$characterInProgressStore.attribute_intelligence}</span></p>
+            <!-- TODO: Display derived stats -->
+            <!-- Example derived stat placeholder -->
+            <p class="col-span-2">Prime Modifier: <span class="font-bold text-yellow-accent">TODO</span></p>
+        </div>
     </div>
 
     <!-- 6. Overflow Helper Panel (Melt UI Dialog): -->
@@ -317,8 +348,8 @@
                         {#if attrName !== overflowAttributeName}
                             <div class="flex items-center justify-between mb-2">
                                 <!-- Changed label to span as it's not associated with a form control -->
-                                <span>{(attrName as keyof typeof tempAttributesForReallocation).replace('attribute_', '')}: {tempAttributesForReallocation[attrName as keyof typeof tempAttributesForReallocation]}</span>
-                                <button on:click={() => reduceAttributeInPanel(attrName as keyof typeof tempAttributesForReallocation)} disabled={(tempAttributesForReallocation[attrName as keyof typeof tempAttributesForReallocation] ?? -2) <= -2 || pointsFreedInPanel >= overflowAmount} class="px-2 py-1 bg-red-500 hover:bg-red-600 text-white rounded">-</button>
+                                <span>{attrName.replace('attribute_', '')}: {tempAttributesForReallocation[attrName as keyof typeof tempAttributesForReallocation]}</span>
+                                <button on:click={() => reduceAttributeInPanel(attrName as keyof typeof tempAttributesForReallocation)} disabled={ (tempAttributesForReallocation[attrName as keyof typeof tempAttributesForReallocation] ?? -2) <= -2 || pointsFreedInPanel >= overflowAmount } class="px-2 py-1 bg-red-500 hover:bg-red-600 text-white rounded">-</button>
                             </div>
                         {/if}
                     {/each}
@@ -334,4 +365,11 @@
             </div>
         </div>
     {/if}
+
+    <!-- Next Button -->
+    <div class="mt-8 text-right">
+        <button class="bg-yellow-accent hover:bg-yellow-accent/90 text-dark-bg-primary font-bold py-2 px-4 rounded disabled:opacity-50 disabled:cursor-not-allowed" disabled={ancestryPointsRemaining !== 0 || currentSelectedTraits.length === 0}>
+            Next Step
+        </button>
+    </div>
 </div>

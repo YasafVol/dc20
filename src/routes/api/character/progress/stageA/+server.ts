@@ -49,7 +49,9 @@ export async function POST({ request }) {
           attribute_charisma,
           attribute_intelligence,
           pointsSpent, // Store points spent for consistency, though backend validates
-          currentStep: 2, // Move to Stage B
+          selectedTraitIds: JSON.stringify([]), // Initialize selected traits for Stage B
+          selectedFeatureChoices: JSON.stringify([]), // Initialize selected feature choices
+          currentStep: 1, // Mark Stage A as complete
         },
       });
     } else {
@@ -61,7 +63,9 @@ export async function POST({ request }) {
           attribute_charisma,
           attribute_intelligence,
           pointsSpent,
-          currentStep: 2, // Move to Stage B
+          selectedTraitIds: JSON.stringify([]), // Initialize selected traits for Stage B
+          selectedFeatureChoices: JSON.stringify([]), // Initialize selected feature choices
+          currentStep: 1, // Mark Stage A as complete
         },
       });
       // Note: The frontend will need to update its store with this new ID

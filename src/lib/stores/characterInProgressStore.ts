@@ -16,7 +16,7 @@ interface CharacterInProgressStoreData extends CharacterInProgress {
 
 // Initial state for the store, matching Prisma defaults and adding UI state
 const initialCharacterInProgressState: CharacterInProgressStoreData = {
-  id: null, // Will be set when a new character is started/loaded
+  id: '', // Will be set when a new character is started/loaded
   attribute_might: -2,
   attribute_agility: -2,
   attribute_charisma: -2,
@@ -34,8 +34,6 @@ const initialCharacterInProgressState: CharacterInProgressStoreData = {
   // Skills, Equipment, Details fields will be added/updated later
   finalName: null,
   finalPlayerName: null,
-
-  finalCharacterSheet: null, // This will be populated when creation is complete
 
   createdAt: new Date(), // Placeholder, will be set by DB
   updatedAt: new Date(), // Placeholder, will be set by DB
@@ -83,6 +81,12 @@ export const primeModifier = derived(
     // Handle ties: If there's a tie, the player chooses.
     // For now, we'll just pick the first one in case of a tie.
     // A more complex implementation might require user input on tie-breaking.
+    // Add a defensive check for highestAttribute
+    if (!highestAttribute) {
+        console.error("Error calculating primeModifier: highestAttribute is undefined.");
+        return { value: 0, attribute: 'Unknown' }; // Return a default safe value
+    }
+
     const primeModifierValue = highestAttribute.value;
     const primeModifierAttribute = highestAttribute.name;
 
