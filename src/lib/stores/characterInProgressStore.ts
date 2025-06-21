@@ -3,6 +3,7 @@
 import { writable, derived } from 'svelte/store';
 import type { Writable } from 'svelte/store';
 import type { CharacterInProgress } from '@prisma/client'; // Assuming Prisma client is generated
+import { classesData } from '../rulesdata/classes';
 
 // Define the shape of the data stored in the characterInProgressStore
 // This should mirror the CharacterInProgress Prisma model, plus any UI state
@@ -150,6 +151,30 @@ export const jumpDistance = derived(
   }
 );
 
+/**
+ * Derived store for Starting SP (from class)
+ */
+export const startingSP = derived(
+  characterInProgressStore,
+  ($store) => {
+    if (!$store.classId) return 0;
+    const classData = classesData.find(c => c.id === $store.classId);
+    return classData?.startingSP ?? 0;
+  }
+);
+
+/**
+ * Derived store for Starting MP (from class)
+ */
+export const startingMP = derived(
+  characterInProgressStore,
+  ($store) => {
+    if (!$store.classId) return 0;
+    const classData = classesData.find(c => c.id === $store.classId);
+    return classData?.startingMP ?? 0;
+  }
+);
+
 // Derived store for Provisional Skill Points (5 + Intelligence Modifier + Class Bonus)
 export const provisionalSkillPoints = derived(
   characterInProgressStore,
@@ -174,11 +199,15 @@ export const ancestryPointsRemaining = derived(
   }
 );
 
-// Derived store for Max HP (Class HP + Might Modifier + Ancestry HP)
+/**
+ * Derived store for Max HP (Class HP + Might Modifier + Ancestry HP)
+ * Uses selected class's baseHpContribution, defaults to 8 if not set.
+ */
 export const maxHP = derived(
   characterInProgressStore,
   ($store) => {
-    const classHP = 8; // Hardcoded Class HP to 8 as per user feedback
+    const classData = classesData.find(c => c.id === $store.classId);
+    const classHP = classData?.baseHpContribution ?? 8;
     const mightModifier = getModifier($store.attribute_might);
     const ancestryHP = 0; // Assuming 0 for MVP until Ancestry HP is implemented
     return classHP + mightModifier + ancestryHP;

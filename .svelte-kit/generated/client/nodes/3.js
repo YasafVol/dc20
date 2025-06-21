@@ -1,1 +1,1 @@
-export { default as component } from "../../../../src/routes/character-creator/stage-a/+page.svelte";
+export { default as component } from "../../../../src/routes/character-creator/+page.svelte";
