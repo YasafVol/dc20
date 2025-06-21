@@ -215,33 +215,64 @@
     <p class="mb-4 text-light-text-secondary" class:text-magenta-error={pointsRemaining < 0}>
       Budget: {pointsRemaining} / {POINT_BUY_BUDGET} Points Remaining
     </p>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+    <div class="flex flex-col gap-4 mb-6">
       {#each attributesData as attribute (attribute.id)}
-        <div class="p-4 bg-dark-bg-primary rounded-md shadow-sm relative flex flex-col justify-between"
-             class:border-2={displayedPrimeModifierAttribute === attribute.name}
-             class:border-yellow-accent={displayedPrimeModifierAttribute === attribute.name}>
-          <div class="flex justify-between items-center mb-1">
-            <label for={`attribute-${attribute.id}`} class="text-xl font-medium text-light-text-primary">
+        <div
+          class="flex items-center gap-4 p-4 bg-dark-bg-primary rounded-md shadow-sm relative"
+        >
+          <!-- Controls (leftmost) -->
+          <div class="flex items-center gap-2">
+            <button
+              class="p-2 h-8 w-8 flex items-center justify-center bg-magenta-error/70 hover:bg-magenta-error rounded-md text-lg"
+              on:click={() => handleAttributeChange(attribute.id as keyof typeof currentAttributes, -1)}
+              disabled={currentAttributes[attribute.id as keyof typeof currentAttributes] <= ATTRIBUTE_MIN}
+            >-</button>
+            <input
+              id={`attribute-${attribute.id}`}
+              type="number"
+              readonly
+              value={currentAttributes[attribute.id as keyof typeof currentAttributes]}
+              class="w-12 text-center text-xl font-semibold bg-dark-bg-secondary rounded-md p-1 h-8"
+            />
+            <button
+              class="p-2 h-8 w-8 flex items-center justify-center bg-purple-primary/70 hover:bg-purple-primary rounded-md text-lg"
+              on:click={() => handleAttributeChange(attribute.id as keyof typeof currentAttributes, 1)}
+              disabled={currentAttributes[attribute.id as keyof typeof currentAttributes] >= ATTRIBUTE_MAX_L1 || pointsRemaining <= 0}
+            >+</button>
+          </div>
+          <!-- Yellow marker (if prime) -->
+          {#if displayedPrimeModifierAttribute === attribute.name}
+            <div class="w-1 h-10 bg-yellow-accent rounded mr-3"></div>
+          {/if}
+          <!-- Name & Description -->
+          <div class="flex flex-col min-w-[140px]">
+            <label for={`attribute-${attribute.id}`} class="text-xl font-medium text-light-text-primary leading-tight">
               {attribute.name}
             </label>
-            <span class="text-blue-info font-medium">
-              Save: {($saveMasteries[attribute.id as keyof typeof $saveMasteries] >= 0 ? '+' : '') + $saveMasteries[attribute.id as keyof typeof $saveMasteries]}
+            <span class="text-xs text-light-text-secondary">{attribute.description}</span>
+          </div>
+
+          <!-- Derived Stat (if any) -->
+          {#if attribute.id === 'charisma'}
+            <span class="ml-4 text-xs text-light-text-secondary whitespace-nowrap">
+              Grit: {$gritPoints}
             </span>
-          </div>
-          <p class="text-sm text-light-text-secondary mb-2">{attribute.description}</p>
-          <div class="flex items-center gap-2 mb-2">
-            <button class="p-2 h-8 w-8 flex items-center justify-center bg-magenta-error/70 hover:bg-magenta-error rounded-md text-lg"
-                         on:click={() => handleAttributeChange(attribute.id as keyof typeof currentAttributes, -1)}
-                         disabled={currentAttributes[attribute.id as keyof typeof currentAttributes] <= ATTRIBUTE_MIN}>-</button>
-            <input id={`attribute-${attribute.id}`}
-                        type="number"
-                        readonly
-                        value={currentAttributes[attribute.id as keyof typeof currentAttributes]}
-                        class="w-12 text-center text-xl font-semibold bg-dark-bg-secondary rounded-md p-1 h-8" />
-            <button class="p-2 h-8 w-8 flex items-center justify-center bg-purple-primary/70 hover:bg-purple-primary rounded-md text-lg"
-                         on:click={() => handleAttributeChange(attribute.id as keyof typeof currentAttributes, 1)}
-                         disabled={currentAttributes[attribute.id as keyof typeof currentAttributes] >= ATTRIBUTE_MAX_L1 || pointsRemaining <= 0}>+</button>
-          </div>
+          {/if}
+          {#if attribute.id === 'agility'}
+            <span class="ml-4 text-xs text-light-text-secondary whitespace-nowrap">
+              Jump: {$jumpDistance}
+            </span>
+          {/if}
+          {#if attribute.id === 'intelligence'}
+            <span class="ml-4 text-xs text-light-text-secondary whitespace-nowrap">
+              Skill Pts: {$provisionalSkillPoints}
+            </span>
+          {/if}
+
+          <!-- Save Bonus (far right) -->
+          <span class="ml-auto text-blue-info font-medium whitespace-nowrap">
+            Save: {($saveMasteries[attribute.id as keyof typeof $saveMasteries] >= 0 ? '+' : '') + $saveMasteries[attribute.id as keyof typeof $saveMasteries]}
+          </span>
         </div>
       {/each}
     </div>
