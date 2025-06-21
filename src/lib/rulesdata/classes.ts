@@ -1,4 +1,4 @@
-import { IClassDefinition } from './types';
+import type { IClassDefinition } from './types.js';
 
 // IClassDefinition for Barbarian:
 export const barbarianClass: IClassDefinition = {

@@ -9,8 +9,8 @@ export const attributesData: IAttributeData[] = [
   name: 'Might',
   description: 'Your Strength of Body.',
   derivedStats: [ // Examples, verify/adjust based on actual rules for each attribute
-    { statName: 'Part of Area Defense calculation', formula: 'AD = 8 + CM + Might + Charisma + Bonuses' },
-    { statName: 'Contributes to Max HP', formula: 'Max HP = Class HP + Might + Ancestry HP' }
+    { statName: 'AD (area defense)', formula: '8 + CM + Might + Charisma + Bonuses' },
+    { statName: 'Max HP', formula: 'Class HP + Might + Ancestry HP' }
   ]
 },
 {
@@ -18,9 +18,9 @@ export const attributesData: IAttributeData[] = [
   name: 'Agility',
   description: 'Your Balance, Nimbleness, and Dexterity.',
   derivedStats: [
-    { statName: 'Part of Precision Defense calculation', formula: 'PD = 8 + CM + Agility + Intelligence + Bonuses' },
-    { statName: 'Determines Jump Distance', formula: 'Jump Distance = Agility (min 1)' },
-    { statName: 'Contributes to Initiative', formula: 'Initiative = CM + Agility' }
+    { statName: 'PD (precision defense)', formula: '8 + CM + Agility + Intelligence + Bonuses' },
+    { statName: 'Jump Distance', formula: 'Agility (min 1)' },
+    { statName: 'Initiative', formula: 'CM + Agility' }
   ]
 },
 {
@@ -28,8 +28,7 @@ export const attributesData: IAttributeData[] = [
   name: 'Charisma',
   description: 'Your Charm, Presence, Persuasiveness, and Force of Will.',
   derivedStats: [
-    { statName: 'Part of Area Defense calculation', formula: 'AD = 8 + CM + Might + Charisma + Bonuses' },
-    { statName: 'Determines Grit Points', formula: 'Grit Points = 2 + Charisma' }
+    { statName: 'Grit Points', formula: '2 + Charisma' }
   ]
 },
 {
@@ -37,8 +36,7 @@ export const attributesData: IAttributeData[] = [
   name: 'Intelligence',
   description: 'Your Reasoning, Understanding, and Wisdom.',
   derivedStats: [
-    { statName: 'Part of Precision Defense calculation', formula: 'PD = 8 + CM + Agility + Intelligence + Bonuses' },
-    { statName: 'Determines Base Skill Points', formula: 'Skill Points = 5 + Intelligence' }
+    { statName: 'Base Skill Points', formula: '5 + Intelligence' }
   ]
 }
 ];

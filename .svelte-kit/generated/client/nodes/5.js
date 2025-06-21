@@ -1,0 +1,1 @@
+export { default as component } from "../../../../src/routes/character-creator/stage-b/+page.svelte";
