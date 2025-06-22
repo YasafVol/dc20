@@ -14,8 +14,7 @@
   },
   "scripts": {
     "dev": "vite dev",
-    "build": "vite build",
-    "postinstall": "npx prisma migrate deploy && npx prisma generate"
+    "build": "vite build"
   },
   "dependencies": {
     "@melt-ui/svelte": "^0.86.6",
