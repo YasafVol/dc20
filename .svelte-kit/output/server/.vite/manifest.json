@@ -1,0 +1,188 @@
+{
+  ".svelte-kit/generated/server/internal.js": {
+    "file": "internal.js",
+    "name": "internal",
+    "src": ".svelte-kit/generated/server/internal.js",
+    "isEntry": true,
+    "imports": [
+      "_internal.js"
+    ]
+  },
+  "_ancestries.js": {
+    "file": "chunks/ancestries.js",
+    "name": "ancestries"
+  },
+  "_attributes.js": {
+    "file": "chunks/attributes.js",
+    "name": "attributes"
+  },
+  "_characterInProgressStore.js": {
+    "file": "chunks/characterInProgressStore.js",
+    "name": "characterInProgressStore",
+    "imports": [
+      "_index3.js",
+      "_classes.js"
+    ]
+  },
+  "_classes.js": {
+    "file": "chunks/classes.js",
+    "name": "classes"
+  },
+  "_client.js": {
+    "file": "chunks/client.js",
+    "name": "client",
+    "imports": [
+      "_exports.js",
+      "_index3.js",
+      "_index.js"
+    ]
+  },
+  "_exports.js": {
+    "file": "chunks/exports.js",
+    "name": "exports"
+  },
+  "_index.js": {
+    "file": "chunks/index.js",
+    "name": "index"
+  },
+  "_index2.js": {
+    "file": "chunks/index2.js",
+    "name": "index"
+  },
+  "_index3.js": {
+    "file": "chunks/index3.js",
+    "name": "index",
+    "imports": [
+      "_index.js"
+    ]
+  },
+  "_internal.js": {
+    "file": "chunks/internal.js",
+    "name": "internal",
+    "imports": [
+      "_index.js"
+    ]
+  },
+  "_traits.js": {
+    "file": "chunks/traits.js",
+    "name": "traits"
+  },
+  "node_modules/@sveltejs/kit/src/runtime/components/svelte-5/error.svelte": {
+    "file": "entries/fallbacks/error.svelte.js",
+    "name": "entries/fallbacks/error.svelte",
+    "src": "node_modules/@sveltejs/kit/src/runtime/components/svelte-5/error.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index.js",
+      "_client.js"
+    ]
+  },
+  "node_modules/@sveltejs/kit/src/runtime/server/index.js": {
+    "file": "index.js",
+    "name": "index",
+    "src": "node_modules/@sveltejs/kit/src/runtime/server/index.js",
+    "isEntry": true,
+    "imports": [
+      "_index.js",
+      "_internal.js",
+      "_index2.js",
+      "_exports.js",
+      "_index3.js"
+    ]
+  },
+  "src/routes/+layout.svelte": {
+    "file": "entries/pages/_layout.svelte.js",
+    "name": "entries/pages/_layout.svelte",
+    "src": "src/routes/+layout.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index.js"
+    ],
+    "css": [
+      "_app/immutable/assets/_layout.sp9yVA3c.css"
+    ]
+  },
+  "src/routes/+page.svelte": {
+    "file": "entries/pages/_page.svelte.js",
+    "name": "entries/pages/_page.svelte",
+    "src": "src/routes/+page.svelte",
+    "isEntry": true
+  },
+  "src/routes/api/character/progress/complete/+server.ts": {
+    "file": "entries/endpoints/api/character/progress/complete/_server.ts.js",
+    "name": "entries/endpoints/api/character/progress/complete/_server.ts",
+    "src": "src/routes/api/character/progress/complete/+server.ts",
+    "isEntry": true,
+    "imports": [
+      "_index2.js",
+      "_classes.js",
+      "_traits.js"
+    ]
+  },
+  "src/routes/api/character/progress/stageA/+server.ts": {
+    "file": "entries/endpoints/api/character/progress/stageA/_server.ts.js",
+    "name": "entries/endpoints/api/character/progress/stageA/_server.ts",
+    "src": "src/routes/api/character/progress/stageA/+server.ts",
+    "isEntry": true,
+    "imports": [
+      "_index2.js"
+    ]
+  },
+  "src/routes/api/character/progress/stageB/+server.ts": {
+    "file": "entries/endpoints/api/character/progress/stageB/_server.ts.js",
+    "name": "entries/endpoints/api/character/progress/stageB/_server.ts",
+    "src": "src/routes/api/character/progress/stageB/+server.ts",
+    "isEntry": true,
+    "imports": [
+      "_index2.js",
+      "_ancestries.js",
+      "_traits.js"
+    ]
+  },
+  "src/routes/character-creator/+page.svelte": {
+    "file": "entries/pages/character-creator/_page.svelte.js",
+    "name": "entries/pages/character-creator/_page.svelte",
+    "src": "src/routes/character-creator/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index.js",
+      "_characterInProgressStore.js",
+      "_attributes.js",
+      "_ancestries.js",
+      "_classes.js"
+    ]
+  },
+  "src/routes/character-creator/stage-a/+page.svelte": {
+    "file": "entries/pages/character-creator/stage-a/_page.svelte.js",
+    "name": "entries/pages/character-creator/stage-a/_page.svelte",
+    "src": "src/routes/character-creator/stage-a/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index.js",
+      "_client.js",
+      "_characterInProgressStore.js",
+      "_attributes.js"
+    ]
+  },
+  "src/routes/character-creator/stage-b/+page.svelte": {
+    "file": "entries/pages/character-creator/stage-b/_page.svelte.js",
+    "name": "entries/pages/character-creator/stage-b/_page.svelte",
+    "src": "src/routes/character-creator/stage-b/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index.js",
+      "_characterInProgressStore.js",
+      "_ancestries.js"
+    ]
+  },
+  "src/routes/test-ui/+page.svelte": {
+    "file": "entries/pages/test-ui/_page.svelte.js",
+    "name": "entries/pages/test-ui/_page.svelte",
+    "src": "src/routes/test-ui/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index.js",
+      "_index3.js"
+    ]
+  }
+}
