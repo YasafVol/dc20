@@ -14,7 +14,7 @@
   },
   "scripts": {
     "dev": "vite dev",
-    "build": "vite build"
+    "build": "npx vite build"
   },
   "dependencies": {
     "@melt-ui/svelte": "^0.86.6",
