@@ -4,36 +4,41 @@ This document summarizes the current status of the project, including what has b
 
 ## What Works
 
-- **Stage 0 (Foundation and UI Setup) Completed:**
+- **Character Creation Stages A, B, C Merged:**
+    - The functionality of the original Stage A (Attributes), Stage B (Ancestry), and Stage C (Class) has been successfully merged into a single Svelte page component (`src/routes/character-creator/+page.svelte`).
+    - A new unified API endpoint (`src/routes/api/character/progress/complete/+server.ts`) is implemented to handle saving all data for the merged stages in one request.
+    - The old stage-specific page components and API endpoints have been superseded and moved to a backup directory (`_backup_merge_stages_20250621/`).
+- **Static Rule Data Population Completed:**
+    - The static rule data files (`src/lib/rulesdata/*.ts`) have been fully populated with detailed information for attributes, ancestries, classes, skills, traits, languages, and trades based on the DC20 Beta 0.9.5 rulebook.
+- **Core UI Foundation Completed:**
     - Functional SvelteKit project initialized and configured.
     - TailwindCSS installed and configured with the project's custom theme, verified.
     - The Inter font loaded and applied.
     - Melt UI (`@melt-ui/svelte`) installed, and its preprocessor (`@melt-ui/pp`) correctly configured.
-    - `projectPlan/stage0.md` updated.
-- The memory bank documentation has been successfully updated to reflect the project plan detailed in the `projectPlan/` directory.
-- The core technologies, UI design principles, MVP feature scope, data modeling (Prisma schema), key backend logic, key frontend logic, and specific planning decisions for the Level 1 Character Creator MVP have been documented.
-- Detailed plans for Stage A (Attributes) and Stage B (Ancestry) of the character creation wizard have been incorporated into the documentation.
-- Static rule data in TypeScript files (`src/lib/rulesdata/`) has been implemented based on the DC20 Beta 0.9.5 rulebook.
+- **Documentation Updated:**
+    - The memory bank documentation (`memory-bank/`) and project plan documents (`projectPlan/`) have been updated to reflect the completed stage merge and static data population.
+- The core technologies, UI design principles, MVP feature scope, data modeling (Prisma schema), key backend logic, key frontend logic, and specific planning decisions for the Level 1 Character Creator MVP are defined and reflected in the codebase.
 
 ## What's Left to Build
 
-- Implement the frontend Svelte component and logic for Stage A (Attributes).
-- Implement the backend endpoint/Form Action for Stage A data persistence and validation.
-- Implement the frontend Svelte component and logic for Stage B (Ancestry), including the attribute overflow helper panel.
-- Implement the backend endpoint/Form Action for Stage B data persistence and validation.
-- Detail and implement Stage C (Class) of the character creation wizard.
-- Implement the backend logic for final character calculation and `CharacterSheetData` creation.
+- Thoroughly test the merged character creation page and the unified save API endpoint.
+- Address any bugs or issues found during testing.
+- Detail and implement Stage D (Background) of the character creation process.
+- Detail and implement Stage E (Review) of the character creation process.
+- Detail and implement Stage F (Equipment) of the character creation process.
+- Implement the backend logic for final character calculation and `CharacterSheetData` creation upon completion of Stage F.
 - Implement the frontend component for displaying the finalized character sheet.
-- Implement the basic resume functionality using browser `localStorage`.
+- Refine UI/UX based on testing and feedback.
+- Address outstanding technical debt items (see `projectPlan/techDesignDebt.md`).
 
 ## Current Status
 
-The project has successfully completed Stage 0 (Foundation and UI Setup). The SvelteKit application has a stable and verified UI foundation, including TailwindCSS with the custom theme, the Inter font, and a working Melt UI installation with its preprocessor. The core requirements, scope, and technical approach are defined. Detailed plans for the first two wizard stages (A and B) are documented. The next steps involve translating these plans into code, starting with the implementation of Stage A (Attributes).
+The project has successfully completed the merge of Character Creation Stages A, B, and C into a single page and the full population of static rule data. The core UI foundation is stable. The next steps involve comprehensive testing of the merged functionality and proceeding with the implementation of the remaining character creation stages (D-F).
 
 ## Known Issues
 
-- Stage C of the character creation wizard is not yet detailed in the planning documents.
-- The attribute overflow helper panel logic in Stage B requires careful implementation and testing to ensure correct attribute reallocation and validation.
+- Melt UI SSR compatibility issue with wrapped components (TD-005), leading to the use of standard HTML elements in some parts of the merged page.
+- Outstanding technical debt items are tracked in `projectPlan/techDesignDebt.md`.
 
 ## Evolution of Project Decisions
 
@@ -42,3 +47,7 @@ The project has successfully completed Stage 0 (Foundation and UI Setup). The Sv
 - The decision to initially store static rule data in TypeScript files was made for simplicity during the MVP phase, with a potential future plan to move it to the database.
 - The character creation wizard stages were re-ordered from the original DC20 steps to A-Attributes, B-Ancestry, C-Class, D-Background, E-Review, F-Equipment for a more streamlined digital workflow.
 - A specific dark mode color palette and font (Inter) have been chosen for the UI aesthetics.
+- **Significant Change:** Stages A, B, and C were merged into a single page component (`src/routes/character-creator/+page.svelte`) with a single save API endpoint (`src/routes/api/character/progress/complete/+server.ts`), deviating from the initial stage-by-stage page and API plan.
+
+---
+**Last Updated:** 6/25/2025

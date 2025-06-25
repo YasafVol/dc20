@@ -4,59 +4,55 @@ This document tracks the current work focus, recent changes, and next steps for 
 
 ## Current Work Focus
 
-With the foundational UI setup (Stage 0) complete, the current focus is on implementing Stage A (Attributes) of the Character Creation Wizard. This involves building the Svelte component for attribute allocation and the corresponding backend logic for data handling.
+With the successful merge of Character Creation Stages A, B, and C into a single page and the completion of static rule data population, the current focus is on testing the merged character creation page (`src/routes/character-creator/+page.svelte`) and planning/implementing the subsequent stages (D-F).
 
 ## Recent Changes
 
-**Stage 0 (Foundation and UI Setup) Completed:**
-- Successfully initialized the SvelteKit project manually within the existing directory structure.
-- Integrated TailwindCSS using `npx svelte-add@latest tailwindcss` and installed necessary dependencies (`tailwindcss`, `postcss`, `autoprefixer`).
-- Applied the custom Tailwind theme from `projectPlan/tailwind.config.js` and verified its application on a test page.
-- Set up and verified the Inter font using Google Fonts.
-- Installed Melt UI (`@melt-ui/svelte`) and its preprocessor (`@melt-ui/pp`).
-- Configured the Melt UI preprocessor (`preprocessMeltUI`) in `svelte.config.js`, resolving initial setup issues and verifying its functionality with a test collapsible component.
-- Updated `projectPlan/stage0.md` to accurately reflect all setup steps, including the Melt UI preprocessor configuration.
+**Character Creation Stages A, B, C Merged:**
+- Successfully merged the functionality of the original Stage A (Attributes), Stage B (Ancestry), and Stage C (Class) into a single Svelte page component (`src/routes/character-creator/+page.svelte`).
+- Created a new unified API endpoint (`src/routes/api/character/progress/complete/+server.ts`) to handle saving all data for the merged stages in a single request.
+- The old stage-specific page components and API endpoints have been superseded and moved to a backup directory (`_backup_merge_stages_20250621/`).
 
-The static rule data files (`src/lib/rulesdata/*.ts`) have been populated with detailed information for attributes, ancestries, classes, skills, traits, languages, and trades based on the DC20 Beta 0.9.5 rulebook. This completes a major step in preparing the necessary data for the Character Creation Wizard.
+**Static Rule Data Population Completed:**
+- The static rule data files (`src/lib/rulesdata/*.ts`) have been fully populated with detailed information for attributes, ancestries, classes, skills, traits, languages, and trades based on the DC20 Beta 0.9.5 rulebook. This completes a major step in preparing the necessary data for the Character Creation process.
 
-The memory bank documentation has also been updated based on the detailed planning documents found in the `projectPlan/` directory (`mvp.md`, `stage1.md`, `stage2.md`). This includes:
-- Defining the specific scope and features for the MVP (Stages A, B, C).
-- Detailing the required UI components, internal state, functions, and logic for Stage A (Attributes) and Stage B (Ancestry).
-- Outlining the backend API endpoints/Form Actions needed for stages A and B, including validation requirements.
-- Incorporating details about the chosen technologies (SvelteKit, Melt UI, TailwindCSS, Prisma, PostgreSQL) and their usage patterns.
-- Documenting the data models (`CharacterInProgress`, `CharacterSheetData`) and initial static rule data structure.
-- Clarifying specific planning decisions like state management approach, calculation responsibilities (frontend provisional, backend authoritative), error handling, and basic resume functionality.
+**Core UI Foundation Completed:**
+- Functional SvelteKit project initialized and configured.
+- TailwindCSS installed and configured with the project's custom theme, verified.
+- The Inter font loaded and applied.
+- Melt UI (`@melt-ui/svelte`) installed, and its preprocessor (`@melt-ui/pp`) correctly configured.
 
 ## Next Steps
 
-1.  Implement the Svelte component and logic for Stage A (Attributes) based on `projectPlan/stage1.md`.
-2.  Implement the backend endpoint/Form Action for Stage A data persistence and validation.
-3.  Implement the frontend Svelte component and logic for Stage B (Ancestry) based on `projectPlan/stage2.md`, including the attribute overflow helper panel.
-4.  Implement the backend endpoint/Form Action for Stage B data persistence and validation.
-5.  Implement the Svelte component and logic for Stage C (Class) based on `projectPlan/stage3.md` (once detailed).
-6.  Implement the backend endpoint/Form Action for Stage C data persistence and validation.
-7.  Implement the final character calculation and `CharacterSheetData` creation logic on the backend.
-8.  Implement the Character Page component to display the finalized character sheet.
-9.  Implement the basic resume functionality using browser `localStorage`.
+1.  Thoroughly test the merged character creation page (`src/routes/character-creator/+page.svelte`) and the unified save API endpoint (`src/routes/api/character/progress/complete/+server.ts`).
+2.  Address any bugs or issues found during testing.
+3.  Detail and implement Stage D (Background) of the character creation process.
+4.  Detail and implement Stage E (Review) of the character creation process.
+5.  Detail and implement Stage F (Equipment) of the character creation process.
+6.  Implement the backend logic for final character calculation and `CharacterSheetData` creation upon completion of Stage F.
+7.  Implement the frontend component for displaying the finalized character sheet.
+8.  Refine UI/UX based on testing and feedback.
 
 ## Active Decisions and Considerations
 
-- Using Melt UI primitives for accessible UI components, styled with TailwindCSS. This requires configuring the `@melt-ui/pp` preprocessor in `svelte.config.js`.
+- Using Melt UI primitives for accessible UI components, styled with TailwindCSS. This requires configuring the `@melt-ui/pp` preprocessor in `svelte.config.js`. Note: Some Melt UI components had SSR issues, leading to the use of standard HTML elements in the merged page, which is tracked as technical debt (TD-005).
 - Implementing a dark mode first theme.
 - Storing static rule data in TypeScript files (`src/lib/rulesdata/`) for the MVP.
 - Utilizing a single writable Svelte store (`characterInProgressStore`) for frontend state management, with derived stores for calculated values.
 - Backend is the source of truth for all final calculations and validation.
-- Handling the specific logic for attribute point allocation (Point Buy) and Ancestry Point allocation (including negative traits and attribute cap overflows).
+- The merged page handles the specific logic for attribute point allocation (Point Buy), Ancestry Point allocation, and Class/Feature selection within a single view.
+- The unified `/complete` API endpoint handles the initial save for the A-B-C data block.
 
 ## Important Patterns and Preferences
 
 - Component-based development for the frontend.
 - Clear separation of concerns between frontend UI/provisional logic and backend validation/authoritative calculation.
 - Adherence to the defined dark mode color palette and Inter font.
-- Using SvelteKit Form Actions for wizard stage data submission.
+- Using SvelteKit API routes for backend interactions (specifically the new `/complete` endpoint for the initial save).
 
 ## Learnings and Project Insights
 
-The completion of Stage 0 highlighted the importance of verifying each foundational UI layer. Troubleshooting the Melt UI setup revealed the necessity of its preprocessor (`@melt-ui/pp`) and the correct import/configuration syntax in `svelte.config.js`, a crucial detail not present in the initial plan. This underscores the value of iterative testing even for setup tasks.
+The successful merge of Stages A, B, and C into a single page, along with the creation of a unified API, represents a significant architectural shift from the initial stage-by-stage plan. This approach simplifies the user flow and frontend state management for the initial steps. The completion of static rule data population provides the necessary foundation for implementing the remaining stages and backend calculations. Addressing the Melt UI SSR issue (TD-005) remains a priority for improving component library usage and accessibility.
 
-The detailed planning documents have provided a solid foundation and clear steps for the MVP implementation. The complexity of handling attribute cap overflows during trait selection in Stage B highlights the need for careful state management and validation logic on both the frontend and backend. The structure of the static rule data in TypeScript is defined, which will guide the implementation of data loading and lookups.
+---
+**Last Updated:** 6/25/2025

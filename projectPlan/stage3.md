@@ -1,3 +1,5 @@
+ARCHIVED: This plan describes a previous multi-stage implementation. Functionality for this stage has been merged into `src/routes/character-creator/+page.svelte`. This document is kept for historical reference only.
+
 # AI Generation Guide: Character Creator - Stage C (Class Selection)
 
 ## I. Overall Stage Objective

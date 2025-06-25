@@ -1,164 +1,76 @@
 # DC20 Character Creator - Project Status
 
-## Current Status (May 27, 2025)
+## Current Status (June 25, 2025)
 
-The project is in the planning and initial setup phase for the DC20 Character Creator MVP. The core requirements, scope, and technical approach are defined. Detailed plans for the first two stages of the wizard are documented.
+The project has successfully completed the merge of Character Creation Stages A, B, and C into a single page and the full population of static rule data. The core UI foundation is stable. The next steps involve comprehensive testing of the merged functionality and proceeding with the implementation of the remaining character creation stages (D-F).
 
 ### Completed Tasks
 
-1. __Project Planning__:
+1.  **Character Creation Stages A, B, C Merged:**
+    -   The functionality of the original Stage A (Attributes), Stage B (Ancestry), and Stage C (Class) has been successfully merged into a single Svelte page component (`src/routes/character-creator/+page.svelte`).
+    -   A new unified API endpoint (`src/routes/api/character/progress/complete/+server.ts`) is implemented to handle saving all data for the merged stages in one request.
+    -   The old stage-specific page components and API endpoints have been superseded and moved to a backup directory (`_backup_merge_stages_20250621/`).
+2.  **Static Rule Data Population Completed:**
+    -   The static rule data files (`src/lib/rulesdata/*.ts`) have been fully populated with detailed information for attributes, ancestries, classes, skills, traits, languages, and trades based on the DC20 Beta 0.9.5 rulebook.
+3.  **Core UI Foundation Completed:**
+    -   Functional SvelteKit project initialized and configured.
+    -   TailwindCSS installed and configured with the project's custom theme, verified.
+    -   The Inter font loaded and applied.
+    -   Melt UI (`@melt-ui/svelte`) installed, and its preprocessor (`@melt-ui/pp`) correctly configured.
+4.  **Documentation Updated:**
+    -   The memory bank documentation (`memory-bank/`) and project plan documents (`projectPlan/`) have been updated to reflect the completed stage merge and static data population.
+5.  **Database Setup:**
+    -   Installed and configured PostgreSQL locally.
+    -   Created `dc20-local` database.
+    -   Set up environment variables in `.env` file.
+    -   Generated Prisma client.
+    -   Applied initial migration to create database schema.
+    -   Configured `prisma/schema.prisma` with `CharacterInProgress` and `CharacterSheetData` models.
 
-   - Defined project scope, requirements, and architecture in memory bank documentation
-   - Created detailed plans for Stage A (Attributes) and Stage B (Ancestry) of the character creation wizard
-   - Established UI design principles and color palette
+### Current Work / Next Steps
 
-2. __Database Setup__:
-
-   - Installed and configured PostgreSQL locally
-   - Created `dc20-local` database
-   - Set up environment variables in `.env` file
-   - Generated Prisma client
-   - Applied initial migration to create database schema
-
-3. __Static Data Implementation__:
-
-   - Defined TypeScript interfaces in `src/lib/rulesdata/types.ts`
-   - Created initial rule data files for attributes, ancestries, traits, classes, skills, trades, and languages
-   - Set up Svelte store structure in `src/lib/stores/characterInProgressStore.ts`
-
-### Current Work
-
-The project is now ready for frontend and backend implementation. The database is set up, and the static rule data is in place.
-
-### Next Steps
-
-1. __Frontend Implementation__:
-
-   - Implement the Svelte component for Stage A (Attributes) based on `projectPlan/stage1.md`
-   - Create UI components using Melt UI primitives styled with TailwindCSS
-   - Implement the attribute point allocation system with real-time validation
-
-2. __Backend Implementation__:
-
-   - Create the SvelteKit Form Action for Stage A data persistence
-   - Implement validation logic for attribute point allocation
-   - Connect the frontend to the backend using the Prisma client
-
-3. __Continue Development__:
-
-   - Implement Stage B (Ancestry) components and logic
-   - Implement the attribute overflow helper panel for trait selection
-   - Detail and implement Stage C (Class)
+1.  Thoroughly test the merged character creation page (`src/routes/character-creator/+page.svelte`) and the unified save API endpoint (`src/routes/api/character/progress/complete/+server.ts`).
+2.  Address any bugs or issues found during testing.
+3.  Detail and implement Stage D (Background) of the character creation process.
+4.  Detail and implement Stage E (Review) of the character creation process.
+5.  Detail and implement Stage F (Equipment) of the character creation process.
+6.  Implement the backend logic for final character calculation and `CharacterSheetData` creation upon completion of Stage F.
+7.  Implement the frontend component for displaying the finalized character sheet.
+8.  Refine UI/UX based on testing and feedback.
+9.  Address outstanding technical debt items (see `projectPlan/techDesignDebt.md`).
 
 ## Project Context
 
-The DC20 Character Creator is a web application designed to help players create Level 1 characters for the DC20 tabletop roleplaying game. The application follows a guided wizard approach, breaking down character creation into manageable steps.
+The DC20 Character Creator is a web application designed to help players create Level 1 characters for the DC20 tabletop roleplaying game. The application follows a guided process, with the initial stages (A, B, C) now integrated into a single page.
 
 ### Key Features (MVP)
 
-- Character Creation Wizard (Stages A, B, C)
-- Point Buy system for attributes
-- Ancestry selection and trait allocation
-- Class selection and feature choices
-- Data persistence using PostgreSQL
-- Dark mode UI with a modern aesthetic
+-   Level 1 Character Creation Page (incorporating functionality of original Stages A, B, C).
+-   Point Buy system for attributes.
+-   Ancestry selection and trait allocation.
+-   Class selection and feature choices.
+-   Data persistence using PostgreSQL via a unified API endpoint for the A-B-C data block.
+-   Character Page Output displaying finalized Level 1 data (planned).
+-   Basic resume creation functionality using browser localStorage (planned).
+-   Dark mode UI with a modern aesthetic.
 
 ### Technology Stack
 
-- __Frontend__: SvelteKit, Melt UI, TailwindCSS
-- __Backend__: SvelteKit Form Actions/API Routes
-- __Database__: PostgreSQL with Prisma ORM
-- __State Management__: Svelte stores
+-   **Frontend:** SvelteKit, Melt UI, TailwindCSS
+-   **Backend:** SvelteKit API Routes
+-   **Database:** PostgreSQL with Prisma ORM
+-   **State Management:** Svelte stores
 
 ### Architecture
 
-The application follows a full-stack architecture using SvelteKit. Frontend components handle the user interface and client-side logic, while backend endpoints handle data persistence, validation, and final calculations. The database stores both in-progress character data and finalized character sheets.
+The application follows a full-stack architecture using SvelteKit. Frontend components handle the user interface and client-side logic, while backend endpoints handle data persistence, validation, and final calculations. The database stores both in-progress character data and finalized character sheets. The initial character creation stages (A, B, C) are now handled by a single page component and a single unified API endpoint for saving.
 
 ## Resources
 
-- Detailed planning documents in `projectPlan/` directory
-- Memory bank documentation in `memory-bank/` directory
-- Static rule data in `src/lib/rulesdata/` directory
-- Database schema in `prisma/schema.prisma`
+-   Detailed planning documents in `projectPlan/` directory
+-   Memory bank documentation in `memory-bank/` directory
+-   Static rule data in `src/lib/rulesdata/` directory
+-   Database schema in `prisma/schema.prisma`
 
-
-Here's an additional section about Prisma that you can add to your status.md file:
-
-## Prisma Database Setup Details
-
-### Completed Prisma Setup
-
-- Installed Prisma dependencies:
-  - `prisma` (v6.7.0) as a dev dependency
-  - `@prisma/client` (v6.7.0) as a runtime dependency
-- Created and configured `prisma/schema.prisma` with:
-  - PostgreSQL database provider
-  - `CharacterInProgress` and `CharacterSheetData` models
-- Set up local PostgreSQL database:
-  - Created `dc20-local` database
-  - Configured connection string in `.env` file: `POSTGRES_URL="postgresql://postgres:123456789@localhost:5432/dc20-local"`
-- Generated Prisma client: `npx prisma generate`
-- Applied initial migration: `npx prisma migrate dev --name init`
-- Database tables are now created and ready for use
-
-### Using Prisma in the Application
-
-To use Prisma in your SvelteKit application:
-
-1. **Import the Prisma client**:
-   ```typescript
-   import { PrismaClient } from '@prisma/client'
-   const prisma = new PrismaClient()
-   ```
-
-2. **Create records** (example for saving character progress):
-   ```typescript
-   // In a SvelteKit Form Action or API endpoint
-   const character = await prisma.characterInProgress.create({
-     data: {
-       attribute_might: -1,
-       attribute_agility: 0,
-       attribute_charisma: 1,
-       attribute_intelligence: 2,
-       pointsSpent: 12,
-       // other fields as needed
-     }
-   })
-   ```
-
-3. **Query records** (example for loading character progress):
-   ```typescript
-   const character = await prisma.characterInProgress.findUnique({
-     where: { id: characterId }
-   })
-   ```
-
-4. **Update records** (example for updating after a wizard step):
-   ```typescript
-   const updatedCharacter = await prisma.characterInProgress.update({
-     where: { id: characterId },
-     data: {
-       ancestry1Id: selectedAncestryId,
-       selectedTraitIds: JSON.stringify(selectedTraits),
-       // other fields to update
-     }
-   })
-   ```
-
-### Prisma Utilities
-
-- **Prisma Studio**: A visual database editor
-  - Run with `npx prisma studio`
-  - Allows viewing and editing database records through a web interface
-  - Useful for debugging and manual data management
-
-- **Schema Updates**: When you modify your Prisma schema
-  - Run `npx prisma migrate dev --name descriptive_name` to create and apply a new migration
-  - This keeps your database schema in sync with your code
-
-### Next Steps for Prisma
-
-- Implement database access in SvelteKit Form Actions/API Routes
-- Create helper functions for common database operations
-- Consider setting up a connection pool for production deployment
-- Plan for database backup and recovery strategies
+---
+**Last Updated:** 6/25/2025

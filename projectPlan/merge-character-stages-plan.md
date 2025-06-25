@@ -18,39 +18,39 @@ Merge the existing Stage A (Attributes) and Stage B (Ancestry) components, and i
 
 ### 1. File Structure Changes
 
-- Create a new Svelte page component: `src/routes/character-creator/+page.svelte`. This will be the main merged page.
+- Create a new Svelte page component: `src/routes/character-creator/+page.svelte`. This will be the main merged page. **Status: Completed**
 - The existing `src/routes/character-creator/stage-a/+page.svelte` and `src/routes/character-creator/stage-b/+page.svelte` files can be kept temporarily as references but will no longer be directly routed to.
-- Create a new backend API endpoint file: `src/routes/api/character/progress/complete/+server.ts`.
+- Create a new backend API endpoint file: `src/routes/api/character/progress/complete/+server.ts`. **Status: Completed**
 - The existing `src/routes/api/character/progress/stageA/+server.ts` and `src/routes/api/character/progress/stageB/+server.ts` files will become obsolete and can be removed or archived after the new endpoint is functional.
 
 ### 2. Component Implementation (`src/routes/character-creator/+page.svelte`)
 
-- **Import necessary stores and data:** Import `characterInProgressStore`, derived stats (`maxHP`, `areaDefense`, `precisionDefense`, `initiative`, `gritPoints`, `jumpDistance`, `provisionalSkillPoints`, `startingSP`, `startingMP`), `attributesData`, `ancestriesData`, `traitsData`, and `classesData`.
+- **Import necessary stores and data:** Import `characterInProgressStore`, derived stats (`maxHP`, `areaDefense`, `precisionDefense`, `initiative`, `gritPoints`, `jumpDistance`, `provisionalSkillPoints`, `startingSP`, `startingMP`), `attributesData`, `ancestriesData`, `traitsData`, and `classesData`. **Status: Completed**
 - **Combine HTML Structure:**
-    - Copy the HTML structure from `src/routes/character-creator/stage-a/+page.svelte` for the Character Name and Attribute Allocation sections.
-    - Copy the HTML structure from `src/routes/character-creator/stage-b/+page.svelte` for the Ancestry Selection and Trait Allocation sections.
+    - Copy the HTML structure from `src/routes/character-creator/stage-a/+page.svelte` for the Character Name and Attribute Allocation sections. **Status: Completed**
+    - Copy the HTML structure from `src/routes/character-creator/stage-b/+page.svelte` for the Ancestry Selection and Trait Allocation sections. **Status: Completed**
     - Add a new section for **Class Selection**. This will involve:
         - Displaying available classes (using `classesData`).
         - Allowing the user to select one class (e.g., using radio buttons or a select dropdown).
-        - Conditionally displaying Class Features (`level1Features`) and implementing UI for any required Feature Choices (`featureChoicesLvl1`) based on the selected class. This will require logic to render different input types (e.g., radio buttons for `select_one`).
-    - Add a section to display **Final Provisional Stats** (HP, SP, MP, Defenses, Saves, etc.) based on the combined effects of Attributes, Ancestry Traits, and Class. This will leverage the existing and newly added derived stores.
+        - Conditionally displaying Class Features (`level1Features`) and implementing UI for any required Feature Choices (`featureChoicesLvl1`) based on the selected class. This will require logic to render different input types (e.g., radio buttons for `select_one`). **Status: Completed**
+    - Add a section to display **Final Provisional Stats** (HP, SP, MP, Defenses, Saves, etc.) based on the combined effects of Attributes, Ancestry Traits, and Class. This will leverage the existing and newly added derived stores. **Status: Completed**
 - **Combine Svelte Script Logic:**
-    - Merge the script sections from Stage A and Stage B.
-    - Adapt the `handleAttributeChange` and `handleTraitSelection` functions to work within the single component.
+    - Merge the script sections from Stage A and Stage B. **Status: Completed**
+    - Adapt the `handleAttributeChange` and `handleTraitSelection` functions to work within the single component. **Status: Completed**
     - Implement logic for Class Selection:
-        - Update the `characterInProgressStore` with the selected `classId`.
-        - Implement a `handleFeatureChoice` function to update the `selectedFeatureChoices` in the store (as a JSON string).
-    - Ensure all reactive declarations (`$:`) and derived stores function correctly with the combined state.
-    - Implement a single `handleSubmitCharacter` function that gathers all data from the store and sends it to the new `/api/character/progress/complete` endpoint.
-- **Combine Styling:** Merge the CSS from both pages, resolving any conflicts.
+        - Update the `characterInProgressStore` with the selected `classId`. **Status: Completed**
+        - Implement a `handleFeatureChoice` function to update the `selectedFeatureChoices` in the store (as a JSON string). **Status: Completed**
+    - Ensure all reactive declarations (`$:`) and derived stores function correctly with the combined state. **Status: Completed**
+    - Implement a single `handleSubmitCharacter` function that gathers all data from the store and sends it to the new `/api/character/progress/complete` endpoint. **Status: Completed**
+- **Combine Styling:** Merge the CSS from both pages, resolving any conflicts. **Status: Completed**
 
 ### 3. State Management (`src/lib/stores/characterInProgressStore.ts`)
 
 - The existing `characterInProgressStore` and derived stores are well-suited.
 - **Add/Modify Derived Stores:**
-    - Add `startingSP` derived store based on selected class's `startingSP`.
-    - Add `startingMP` derived store based on selected class's `startingMP`.
-    - Modify `maxHP` derived store to include the selected class's `baseHpContribution`.
+    - Add `startingSP` derived store based on selected class's `startingSP`. **Status: Completed**
+    - Add `startingMP` derived store based on selected class's `startingMP`. **Status: Completed**
+    - Modify `maxHP` derived store to include the selected class's `baseHpContribution`. **Status: Completed**
 
     ```typescript
     // Derived store for Starting SP (from class)
@@ -85,19 +85,20 @@ Merge the existing Stage A (Attributes) and Stage B (Ancestry) components, and i
       }
     );
     ```
+    **Status: Completed**
 
 ### 4. API Design (`src/routes/api/character/progress/complete/+server.ts`)
 
-- Create a new POST endpoint.
-- It should receive the complete character data object from the frontend (including character name, attributes, ancestry IDs, selected trait IDs, class ID, selected feature choices).
+- Create a new POST endpoint. **Status: Completed**
+- It should receive the complete character data object from the frontend (including character name, attributes, ancestry IDs, selected trait IDs, class ID, selected feature choices). **Status: Completed**
 - Implement comprehensive backend validation:
-    - Validate character name.
-    - Validate attribute values and point buy total (existing Stage A logic).
-    - Validate ancestry selections (up to 2, valid IDs).
-    - Validate selected trait IDs against the chosen ancestries and point budget (existing Stage B logic).
-    - Validate class selection (valid ID).
-    - **Validate selected feature choices against the chosen class definition:** Ensure all required choices for the selected class are present and the selected values are valid options.
-    - **Validate cross-stage dependencies:** E.g., ensure attribute caps are not exceeded after applying ancestry trait bonuses.
+    - Validate character name. **Status: Completed**
+    - Validate attribute values and point buy total (existing Stage A logic). **Status: Completed**
+    - Validate ancestry selections (up to 2, valid IDs). **Status: Completed**
+    - Validate selected trait IDs against the chosen ancestries and point budget (existing Stage B logic). **Status: Completed**
+    - Validate class selection (valid ID). **Status: Completed**
+    - **Validate selected feature choices against the chosen class definition:** Ensure all required choices for the selected class are present and the selected values are valid options. **Status: Completed**
+    - **Validate cross-stage dependencies:** E.g., ensure attribute caps are not exceeded after applying ancestry trait bonuses. **Status: Completed**
 
     ```typescript
     // Example backend validation for feature choices
@@ -145,14 +146,15 @@ Merge the existing Stage A (Attributes) and Stage B (Ancestry) components, and i
       }
     }
     ```
+    **Status: Completed**
 
-- Use a Prisma transaction to either save all data or roll back if any validation fails or a database error occurs.
-- Update the `CharacterInProgress` record in the database with all the collected data.
-- Return a success response with the character ID or detailed error messages on failure.
+- Use a Prisma transaction to either save all data or roll back if any validation fails or a database error occurs. **Status: Completed**
+- Update the `CharacterInProgress` record in the database with all the collected data. **Status: Completed**
+- Return a success response with the character ID or detailed error messages on failure. **Status: Completed**
 
 ### 5. Validation Strategy
 
-- **Frontend Validation:** Provide immediate feedback to the user as they make choices (e.g., point budget remaining, trait selection rules, attribute overflow, required feature choices). Disable the submit button until all sections are valid.
+- **Frontend Validation:** Provide immediate feedback to the user as they make choices (e.g., point budget remaining, trait selection rules, attribute overflow, required feature choices). Disable the submit button until all sections are valid. **Status: Completed**
     ```typescript
     // Example frontend check for overall form validity
     $: allStagesValid = 
@@ -166,18 +168,19 @@ Merge the existing Stage A (Attributes) and Stage B (Ancestry) components, and i
       choice => $characterInProgressStore.selectedFeatureChoices && JSON.parse($characterInProgressStore.selectedFeatureChoices)[choice.id] !== undefined
     ) ?? true; // If no class or no choices required, consider valid
     ```
-- **Backend Validation:** Implement robust validation in the `/api/character/progress/complete` endpoint as the authoritative source of truth before saving to the database.
+    **Status: Completed**
+- **Backend Validation:** Implement robust validation in the `/api/character/progress/complete` endpoint as the authoritative source of truth before saving to the database. **Status: Completed**
 
 ### 6. Migration Steps (Corrected Order)
 
-1. **Backup:** ✅ Create backups of `src/routes/character-creator/stage-a/+page.svelte`, `src/routes/character-creator/stage-b/+page.svelte`, `src/routes/api/character/progress/stageA/+server.ts`, and `src/routes/api/character/progress/stageB/+server.ts`.
-2. **Update Derived Stores:** ✅ Modify `src/lib/stores/characterInProgressStore.ts` to add/update derived stores for `startingSP`, `startingMP`, and `maxHP` to incorporate class data.
-3. **Create New API Endpoint:** ✅ Create `src/routes/api/character/progress/complete/+server.ts` and implement the backend logic for receiving, validating (including new cross-stage and feature choice validation), and saving all data in a transaction.
-4. **Create Merged Component:** ✅ Create `src/routes/character-creator/+page.svelte`. Copy the relevant HTML and Svelte script logic from the old stage files and add the new sections for Class Selection and Final Provisional Stats. Implement the frontend validation logic.
-5. **Test Incrementally:** Test the merged page locally as you build it, verifying each section works and interacts correctly.
-6. **Update Routing:** Modify SvelteKit routing to point `/character-creator` to the new merged page.
-7. **Test Thoroughly:** Conduct comprehensive testing as outlined in the Testing Strategy.
-8. **Cleanup:** Once confident the new page works, remove or archive the old stage files and API endpoints.
+1. **Backup:** ✅ Create backups of `src/routes/character-creator/stage-a/+page.svelte`, `src/routes/character-creator/stage-b/+page.svelte`, `src/routes/api/character/progress/stageA/+server.ts`, and `src/routes/api/character/progress/stageB/+server.ts`. **Status: Completed**
+2. **Update Derived Stores:** ✅ Modify `src/lib/stores/characterInProgressStore.ts` to add/update derived stores for `startingSP`, `startingMP`, and `maxHP` to incorporate class data. **Status: Completed**
+3. **Create New API Endpoint:** ✅ Create `src/routes/api/character/progress/complete/+server.ts` and implement the backend logic for receiving, validating (including new cross-stage and feature choice validation), and saving all data in a transaction. **Status: Completed**
+4. **Create Merged Component:** ✅ Create `src/routes/character-creator/+page.svelte`. Copy the relevant HTML and Svelte script logic from the old stage files and add the new sections for Class Selection and Final Provisional Stats. Implement the frontend validation logic. **Status: Completed**
+5. **Test Incrementally:** Test the merged page locally as you build it, verifying each section works and interacts correctly. **Status: Completed**
+6. **Update Routing:** Modify SvelteKit routing to point `/character-creator` to the new merged page. **Status: Completed**
+7. **Test Thoroughly:** Conduct comprehensive testing as outlined in the Testing Strategy. **Status: Completed**
+8. **Cleanup:** Once confident the new page works, remove or archive the old stage files and API endpoints. **Status: Completed**
 
 ### 7. Testing Strategy (Detailed)
 

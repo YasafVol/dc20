@@ -9,10 +9,10 @@ This document describes the purpose and intended functionality of the project fr
 
 ## How it Works
 
-- Users navigate through a 6-stage wizard (A-Attributes, B-Ancestry, C-Class, D-Background, E-Review, F-Equipment). The MVP will implement stages A, B, and C.
-- At each stage, users make choices (allocate points, select ancestries/traits, select class/features) via input fields, selections, and buttons.
+- Users interact with a single, long-form page (`src/routes/character-creator/+page.svelte`) that incorporates the functionality of the original Stages A (Attributes), B (Ancestry), and C (Class).
+- Within this page, users make choices (allocate points, select ancestries/traits, select class/features) via input fields, selections, and buttons organized into distinct sections.
 - The UI provides real-time provisional feedback on how choices affect stats.
-- Data is saved to the database after each completed stage, allowing users to resume later.
+- Data for the A-B-C sections is saved to the database via a single unified API endpoint (`src/routes/api/character/progress/complete/+server.ts`) upon completion of these initial sections, allowing users to resume later.
 - Upon completing the final stage (F), the backend performs final calculations and saves the complete character data.
 - A dedicated Character Page displays the finalized Level 1 character sheet data.
 

@@ -25,14 +25,14 @@ This document outlines the system architecture, key technical decisions, and des
 
 ## Component Relationships
 
-- The main wizard component manages the current stage and renders the appropriate stage component (e.g., `StageA_Attributes.svelte`, `StageB_Ancestry.svelte`).
-- Stage components interact with the `characterInProgressStore` to read and update character data.
-- UI components (Melt UI primitives, custom components) are used within stage components to build the user interface.
-- Frontend components communicate with backend endpoints via SvelteKit Form Actions or API Routes to persist data.
+- The main character creation page (`src/routes/character-creator/+page.svelte`) contains all the UI and logic for the initial stages (A, B, C) within a single component.
+- This page component interacts directly with the `characterInProgressStore` to read and update character data.
+- UI components (Melt UI primitives, custom components) are used within the main page component to build the user interface for each section.
+- The main page component communicates with the unified backend API endpoint (`src/routes/api/character/progress/complete/+server.ts`) to persist data for the A-B-C sections.
 
 ## Critical Implementation Paths
 
-- The character creation wizard flow (Stages A -> B -> C).
-- Data persistence after each wizard stage.
-- Backend validation and final calculation process.
+- The character creation flow within the single merged page (Sections A -> B -> C).
+- Data persistence via the unified `/complete` API endpoint for the A-B-C data block.
+- Backend validation and final calculation process (for the complete character sheet).
 - Displaying the finalized character sheet.

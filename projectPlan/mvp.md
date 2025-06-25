@@ -28,12 +28,12 @@
     *   `https://coolors.co/f72585-b5179e-7209b7-560bad-480ca8-3a0ca3-3f37c9-4361ee-4895ef-4cc9f0`
 
 ## III. MVP Feature Scope
-1.  **Character Creation Wizard (Level 1 Only):**
-    *   Guided, 6-stage UI implementing the initial stages (A-Attributes, B-Ancestry, C-Class) of the re-ordered flow (A-Attributes, B-Ancestry, C-Class, D-Background, E-Review, F-Equipment). These stages incorporate decision points from DC20's original 10 steps for Level 1.
-    *   Visual-only breadcrumbs indicating progress through the re-ordered stages.
+1.  **Character Creation Page (Level 1 Only - Stages A, B, C):**
+    *   A single, long-form page (`src/routes/character-creator/+page.svelte`) incorporating the functionality of the original Stages A (Attributes), B (Ancestry), and C (Class) of the re-ordered flow (A-Attributes, B-Ancestry, C-Class, D-Background, E-Review, F-Equipment). These sections incorporate decision points from DC20's original 10 steps for Level 1.
+    *   Visual-only breadcrumbs indicating progress through the re-ordered stages (as sections on the page).
     *   Input fields, selections, point allocation with real-time validation for Level 1 constraints.
     *   Dynamic *provisional* updates of relevant stats on the frontend as choices are made.
-    *   Data for the current creation process saved to the database (`CharacterInProgress` table) after each wizard step is completed by the user.
+    *   Data for the A-B-C sections is saved to the database (`CharacterInProgress` table) via a single unified API endpoint (`src/routes/api/character/progress/complete/+server.ts`) upon completion of these initial sections.
 2.  **Character Page Output:**
     *   Upon completion of the wizard, all character data is finalized, calculated on the backend, and stored in a `CharacterSheetData` table.
     *   A dedicated page displays this finalized Level 1 character sheet data in a structured, readable HTML format, styled according to the dark mode, modern & clean aesthetic.
@@ -110,18 +110,18 @@
 *   **Static Rule Data:**
     *   Initially embedded as TypeScript objects/arrays within the SvelteKit application (e.g., in `src/lib/rulesdata/`). TypeScript interfaces (e.g., `IAncestry`, `ITrait`, `IClass`) will define the structure. Effect encoding standardized (e.g., `effects: [{ type: 'MODIFY_ATTRIBUTE', target: 'Might', value: 1 }]`).
 
-## V. Key Backend Logic (SvelteKit Form Actions / API Routes)
-*   One SvelteKit Form Action per wizard stage (e.g., `/wizard/stageA`, `/wizard/stageB`, etc.) to save/update `CharacterInProgress` data.
-*   Endpoint/Form Action to finalize character creation:
+## V. Key Backend Logic (SvelteKit API Routes)
+*   A single unified API endpoint (`src/routes/api/character/progress/complete/+server.ts`) handles saving all data for the merged A-B-C sections of the character creation page. This endpoint performs comprehensive validation and updates the `CharacterInProgress` record.
+*   Endpoint/Form Action to finalize character creation (for Stage F completion):
     *   Takes `CharacterInProgress.id`.
     *   Performs all final calculations based on stored choices and embedded rule data.
     *   Validates all rules and constraints.
     *   Creates a new `CharacterSheetData` record.
 *   Endpoint to fetch `CharacterSheetData` for display.
-*   Backend re-validates all inputs for each stage. Final authoritative calculations for `CharacterSheetData` happen on the backend.
+*   Backend re-validates all inputs for the A-B-C data block via the `/complete` endpoint. Final authoritative calculations for `CharacterSheetData` happen on the backend upon Stage F completion.
 
 ## VI. Key Frontend Logic & UI Implementation (SvelteKit with Melt UI & TailwindCSS)
-*   **Wizard Structure:** A main Svelte component managing the current stage, with child components for each re-ordered stage (A, B, C initially).
+*   **Page Structure:** A single Svelte page component (`src/routes/character-creator/+page.svelte`) contains all the UI and logic for the initial A, B, and C sections.
 *   **State Management:** A single, comprehensive writable Svelte store (`characterInProgressStore`) mirroring `CharacterInProgress` model plus transient UI state. Derived stores for calculated UI values.
 *   **UI Components (Built using Melt UI primitives & styled with TailwindCSS):**
     *   Core Melt Primitives: `Button`, `Label`, `Input`, `Select`, `RadioGroup`, `Checkbox`, `Dialog`, `Tooltip`, `Progress`.
@@ -135,7 +135,7 @@
 *   **Complex Selections (Traits, Features):** Stored as JSON strings in `CharacterInProgress` for MVP.
 *   **Static Rule Data Storage:** Hardcoded TypeScript objects/arrays in `src/lib/rulesdata/` for MVP.
 *   **Svelte Store:** Single `characterInProgressStore` (writable), with extensive use of derived stores.
-*   **Backend API:** One SvelteKit Form Action per wizard stage.
+*   **Backend API:** A single unified API endpoint (`src/routes/api/character/progress/complete/+server.ts`) for saving the A-B-C data block.
 *   **Calculations:** Frontend for provisional UI display; backend for authoritative validation and final `CharacterSheetData` calculation.
 *   **Error Handling:** Inline frontend messages; SvelteKit Form Action error patterns for backend errors.
 *   **Resume Creation (MVP):** Use browser `localStorage` to store the `id` of the last edited `CharacterInProgress` record for basic resume functionality.

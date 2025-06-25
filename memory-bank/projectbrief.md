@@ -12,7 +12,7 @@ This document serves as the foundational document for the project, outlining its
 ## Scope
 
 - **Included:**
-    - Level 1 Character Creation Wizard (Stages A, B, C).
+    - Level 1 Character Creation Page (incorporating functionality of original Stages A, B, C).
     - Character Page Output displaying finalized Level 1 data.
     - Data persistence for in-progress and completed characters using Prisma and PostgreSQL.
     - Frontend UI using SvelteKit, Melt UI, and TailwindCSS.
