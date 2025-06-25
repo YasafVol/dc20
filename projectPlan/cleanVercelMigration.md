@@ -38,288 +38,56 @@ dc20/
 - Build process failing on Vercel despite multiple configuration attempts
 - Inconsistent adapter configuration
 
-## Migration Strategy
+## Revised Migration Strategy with Incremental Testing
 
-### Phase 1: Fresh Project Setup (30 minutes)
+This revised strategy incorporates more frequent testing to ensure issues are caught early. This section supersedes the previous "Migration Strategy" and "Migration Checklist" for a more robust, phased approach.
 
-#### 1.1 Create New SvelteKit Project
-```bash
-# Create new project in parent directory
-cd ..
-npm create svelte@latest dc20-clean
-cd dc20-clean
+### Phase 1: Baseline Verification
+1.  Create the new SvelteKit skeleton project.
+2.  Install `@sveltejs/adapter-vercel` and configure `svelte.config.js`.
+3.  **Test Point 1:** Deploy this completely empty project to Vercel.
+    *   **Goal:** Confirm the fundamental build process and Vercel adapter are working correctly before adding any code.
 
-# Select options:
-# - SvelteKit demo app: No
-# - Type checking: TypeScript
-# - Additional options: ESLint, Prettier, Playwright, Vitest
-```
+### Phase 2: Database Layer Verification
+1.  Copy the `prisma` directory and `.env` file.
+2.  Install Prisma dependencies and run `npx prisma generate`.
+3.  Create a temporary `src/routes/api/db-test/+server.ts` endpoint that performs a simple database query.
+4.  **Test Point 2:** Run `npm run dev` and hit the `/api/db-test` endpoint.
+    *   **Goal:** Isolate and confirm that the application can successfully connect to and query the database.
 
-#### 1.2 Install Core Dependencies
-```bash
-# Install Vercel adapter
-npm install @sveltejs/adapter-vercel
+### Phase 3: API Logic Verification
+1.  Copy `src/lib/rulesdata` and `src/lib/stores`.
+2.  Copy the entire `src/routes/api/` directory.
+3.  **Test Point 3:** Run `npm run dev` and test each of the real API endpoints.
+    *   **Goal:** Verify that all backend logic works correctly before introducing the UI.
 
-# Install Prisma
-npm install prisma @prisma/client
+### Phase 4: UI and Integration Verification
+1.  Configure `tailwind.config.js` and copy `app.css`, `app.html`.
+2.  Copy `src/lib/components` and `src/routes/test-ui`.
+3.  **Test Point 4 (Component Rendering):** Run `npm run dev` and navigate to the `/test-ui` page.
+    *   **Goal:** Confirm individual UI components render correctly.
+4.  Copy the remaining pages (`character-creator`, etc.).
+5.  **Test Point 5 (Full Local Integration):** Run `npm run dev` and perform a full end-to-end test locally.
+    *   **Goal:** Ensure UI, API, and database work together.
 
-# Install UI dependencies
-npm install @melt-ui/svelte @melt-ui/pp
-npm install -D tailwindcss postcss autoprefixer @tailwindcss/typography
+### Phase 5: Final Production Verification
+1.  **Test Point 6 (Local Production Build):** Run `npm run build` and `npm run preview`.
+    *   **Goal:** Catch any production-only build issues.
+2.  **Test Point 7 (Staging Deployment):** Deploy to a Vercel preview environment (`vercel`).
+    *   **Goal:** Conduct a final end-to-end test on live Vercel infrastructure.
+3.  **Final Step:** Deploy to production with `vercel --prod`.
 
-# Initialize Tailwind
-npx tailwindcss init -p
-```
+## Git and Repository Strategy
 
-#### 1.3 Configure for Vercel
-Create `vercel.json`:
-```json
-{
-  "framework": "sveltekit"
-}
-```
+This migration will follow a "clean repository" approach to ensure a completely fresh start, free from any legacy configuration issues.
 
-Update `svelte.config.js`:
-```javascript
-import adapter from '@sveltejs/adapter-vercel';
-import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
-import { preprocessMeltUI } from '@melt-ui/pp';
+1.  **New Directory:** The entire migration will take place in a **new, separate directory** named `dc20-clean`, located alongside the original `dc20` project. This isolates the work and keeps the original project safe as a backup.
+2.  **New GitHub Repository:** Upon successful migration and testing, the `dc20-clean` project will be pushed to a **new GitHub repository**.
+    *   **Action:** You will need to create a new, empty repository on GitHub.
+    *   **Reasoning:** This provides the cleanest possible history and avoids complex, risky `git push --force` operations on the existing repository. The old repository can be archived for historical purposes.
+3.  **Vercel Re-linking:** The existing Vercel project will need to be updated to point to the new GitHub repository.
 
-const config = {
-  preprocess: [preprocessMeltUI(), vitePreprocess()],
-  kit: {
-    adapter: adapter()
-  }
-};
-
-export default config;
-```
-
-#### 1.4 Test Initial Deployment
-```bash
-# Deploy to Vercel
-vercel
-
-# Verify deployment works
-```
-
-### Phase 2: Database Migration (45 minutes)
-
-#### 2.1 Copy Prisma Configuration
-```bash
-# Copy from old project
-cp ../dc20/prisma/schema.prisma ./prisma/
-cp -r ../dc20/prisma/migrations ./prisma/
-```
-
-#### 2.2 Update Environment Variables
-Copy `.env` and update Vercel environment variables:
-- `DATABASE_URL` (your Prisma Accelerate connection string)
-
-#### 2.3 Generate Prisma Client
-```bash
-npx prisma generate
-npx prisma db push  # Verify database connection
-```
-
-#### 2.4 Test Database Connection
-Create test API route to verify Prisma works:
-```typescript
-// src/routes/api/test/+server.ts
-import { PrismaClient } from '@prisma/client';
-import { json } from '@sveltejs/kit';
-
-const prisma = new PrismaClient();
-
-export async function GET() {
-  try {
-    const count = await prisma.characterInProgress.count();
-    return json({ success: true, count });
-  } catch (error) {
-    return json({ success: false, error: error.message }, { status: 500 });
-  }
-}
-```
-
-### Phase 3: Core Logic Migration (1 hour)
-
-#### 3.1 Copy Game Data Files
-```bash
-# Copy all rules data
-cp -r ../dc20/src/lib/rulesdata ./src/lib/
-
-# Copy stores
-cp -r ../dc20/src/lib/stores ./src/lib/
-```
-
-#### 3.2 Copy and Update API Routes
-```bash
-# Copy API routes
-cp -r ../dc20/src/routes/api ./src/routes/
-
-# Update imports if needed (check for any path issues)
-```
-
-#### 3.3 Test API Endpoints
-Test each endpoint:
-- `/api/character/progress/stageA`
-- `/api/character/progress/stageB`
-- `/api/character/progress/complete`
-
-### Phase 4: UI Components Migration (1.5 hours)
-
-#### 4.1 Setup Tailwind Configuration
-Copy and update `tailwind.config.js`:
-```javascript
-// Copy from old project and verify paths
-```
-
-#### 4.2 Copy UI Components
-```bash
-# Copy component library
-cp -r ../dc20/src/lib/components ./src/lib/
-
-# Copy global styles
-cp ../dc20/src/app.css ./src/
-cp ../dc20/src/app.html ./src/
-```
-
-#### 4.3 Copy Character Creator Pages
-```bash
-# Copy main pages
-cp -r ../dc20/src/routes/character-creator ./src/routes/
-cp ../dc20/src/routes/+layout.svelte ./src/routes/
-cp ../dc20/src/routes/+page.svelte ./src/routes/
-```
-
-#### 4.4 Copy Test UI (Optional)
-```bash
-cp -r ../dc20/src/routes/test-ui ./src/routes/
-```
-
-### Phase 5: Configuration & Styling (30 minutes)
-
-#### 5.1 Copy Configuration Files
-```bash
-# Copy PostCSS config
-cp ../dc20/postcss.config.js ./
-
-# Copy TypeScript config (if different)
-cp ../dc20/tsconfig.json ./
-
-# Update package.json scripts if needed
-```
-
-#### 5.2 Verify All Imports
-Check and fix any import path issues in:
-- API routes
-- Svelte components
-- Store imports
-- Type imports
-
-### Phase 6: Testing & Verification (45 minutes)
-
-#### 6.1 Local Development Test
-```bash
-npm run dev
-```
-
-Verify:
-- [ ] Home page loads
-- [ ] Character creator pages load
-- [ ] API endpoints respond correctly
-- [ ] Database operations work
-- [ ] UI components render properly
-- [ ] Styling is correct
-
-#### 6.2 Build Test
-```bash
-npm run build
-npm run preview
-```
-
-Verify build works locally.
-
-#### 6.3 Vercel Deployment Test
-```bash
-vercel --prod
-```
-
-Verify:
-- [ ] Deployment succeeds
-- [ ] All pages load in production
-- [ ] API endpoints work in production
-- [ ] Database operations work in production
-
-### Phase 7: Final Migration Steps (30 minutes)
-
-#### 7.1 Update Git Repository
-```bash
-# Initialize new git repo or update existing
-git init
-git add .
-git commit -m "Initial clean migration from dc20"
-
-# If updating existing repo:
-# git remote set-url origin <your-repo-url>
-# git push --force-with-lease
-```
-
-#### 7.2 Update Vercel Project
-- Connect new repository to Vercel project
-- Verify environment variables are set
-- Test final deployment
-
-#### 7.3 DNS/Domain Update (if applicable)
-- Update custom domain settings
-- Verify SSL certificates
-
-## Migration Checklist
-
-### Pre-Migration
-- [ ] Backup current project
-- [ ] Document current environment variables
-- [ ] Note any custom configurations
-- [ ] Test current database connection
-
-### Phase 1: Fresh Setup
-- [ ] Create new SvelteKit project
-- [ ] Install dependencies
-- [ ] Configure Vercel adapter
-- [ ] Test initial deployment
-
-### Phase 2: Database
-- [ ] Copy Prisma schema
-- [ ] Copy migrations
-- [ ] Update environment variables
-- [ ] Test database connection
-
-### Phase 3: Core Logic
-- [ ] Copy rules data
-- [ ] Copy stores
-- [ ] Copy API routes
-- [ ] Test API endpoints
-
-### Phase 4: UI Components
-- [ ] Setup Tailwind
-- [ ] Copy components
-- [ ] Copy pages
-- [ ] Test UI rendering
-
-### Phase 5: Configuration
-- [ ] Copy config files
-- [ ] Fix import paths
-- [ ] Update package.json
-
-### Phase 6: Testing
-- [ ] Local development test
-- [ ] Local build test
-- [ ] Production deployment test
-
-### Phase 7: Final Steps
-- [ ] Update git repository
-- [ ] Update Vercel project
-- [ ] Update domain settings
+This strategy is the safest and most effective way to achieve the "clean install" objective.
 
 ## Rollback Plan
 
@@ -378,3 +146,44 @@ If migration fails:
 - Test each phase thoroughly before moving to the next
 - Document any deviations from this plan
 - If any phase fails, troubleshoot before continuing
+
+---
+
+## Revised Migration Strategy with Incremental Testing
+
+This revised strategy incorporates more frequent testing to ensure issues are caught early. This section supersedes the previous "Migration Strategy" and "Migration Checklist" for a more robust, phased approach.
+
+### Phase 1: Baseline Verification
+1.  Create the new SvelteKit skeleton project.
+2.  Install `@sveltejs/adapter-vercel` and configure `svelte.config.js`.
+3.  **Test Point 1:** Deploy this completely empty project to Vercel.
+    *   **Goal:** Confirm the fundamental build process and Vercel adapter are working correctly before adding any code.
+
+### Phase 2: Database Layer Verification
+1.  Copy the `prisma` directory and `.env` file.
+2.  Install Prisma dependencies and run `npx prisma generate`.
+3.  Create a temporary `src/routes/api/db-test/+server.ts` endpoint that performs a simple database query.
+4.  **Test Point 2:** Run `npm run dev` and hit the `/api/db-test` endpoint.
+    *   **Goal:** Isolate and confirm that the application can successfully connect to and query the database.
+
+### Phase 3: API Logic Verification
+1.  Copy `src/lib/rulesdata` and `src/lib/stores`.
+2.  Copy the entire `src/routes/api/` directory.
+3.  **Test Point 3:** Run `npm run dev` and test each of the real API endpoints.
+    *   **Goal:** Verify that all backend logic works correctly before introducing the UI.
+
+### Phase 4: UI and Integration Verification
+1.  Configure `tailwind.config.js` and copy `app.css`, `app.html`.
+2.  Copy `src/lib/components` and `src/routes/test-ui`.
+3.  **Test Point 4 (Component Rendering):** Run `npm run dev` and navigate to the `/test-ui` page.
+    *   **Goal:** Confirm individual UI components render correctly.
+4.  Copy the remaining pages (`character-creator`, etc.).
+5.  **Test Point 5 (Full Local Integration):** Run `npm run dev` and perform a full end-to-end test locally.
+    *   **Goal:** Ensure UI, API, and database work together.
+
+### Phase 5: Final Production Verification
+1.  **Test Point 6 (Local Production Build):** Run `npm run build` and `npm run preview`.
+    *   **Goal:** Catch any production-only build issues.
+2.  **Test Point 7 (Staging Deployment):** Deploy to a Vercel preview environment (`vercel`).
+    *   **Goal:** Conduct a final end-to-end test on live Vercel infrastructure.
+3.  **Final Step:** Deploy to production with `vercel --prod`.
