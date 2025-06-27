@@ -56,3 +56,4 @@ This document serves as the foundational document for the project, outlining its
 - Emphasis on a clean, modern dark mode UI.
 - Static rule data is initially hardcoded for simplicity in the MVP.
 - Backend is the source of truth for final calculations and validation.
+- **Deployment Strategy**: The project will be deployed on Vercel, with a strong emphasis on incremental testing in the production environment to ensure stability and catch issues early. A clean migration to a new SvelteKit project is planned to resolve existing deployment issues.

@@ -21,6 +21,19 @@ This document summarizes the current status of the project, including what has b
 
 ## What's Left to Build
 
+The immediate focus has shifted to the Vercel migration as outlined in `projectPlan/cleanVercelMigration.md`. The remaining character creation stages (D-F) and associated backend/frontend implementations are currently on hold until the deployment issues are resolved.
+
+**Current Priority: Vercel Migration**
+- **Phase 1: Baseline Verification (Vercel)**
+    - Create a new SvelteKit skeleton project in a `dc20-clean` directory.
+    - Install `@sveltejs/adapter-vercel` and configure `svelte.config.js`.
+    - Deploy to Vercel to confirm fundamental build process and Vercel adapter are working correctly.
+- **Phase 2: Database Layer Verification (Vercel)**
+- **Phase 3: API Logic Verification (Vercel)**
+- **Phase 4: UI and Integration Verification (Vercel)**
+- **Phase 5: Final Production Deployment**
+
+**Subsequent Tasks (After Vercel Migration):**
 - Thoroughly test the merged character creation page and the unified save API endpoint.
 - Address any bugs or issues found during testing.
 - Detail and implement Stage D (Background) of the character creation process.
@@ -33,7 +46,7 @@ This document summarizes the current status of the project, including what has b
 
 ## Current Status
 
-The project has successfully completed the merge of Character Creation Stages A, B, and C into a single page and the full population of static rule data. The core UI foundation is stable. The next steps involve comprehensive testing of the merged functionality and proceeding with the implementation of the remaining character creation stages (D-F).
+The project has successfully completed the merge of Character Creation Stages A, B, and C into a single page and the full population of static rule data. The core UI foundation is stable. However, persistent Vercel deployment issues have necessitated a shift in focus. The project is now prioritizing a clean migration to Vercel, following the incremental testing strategy outlined in `projectPlan/cleanVercelMigration.md`.
 
 ## Known Issues
 
@@ -48,6 +61,7 @@ The project has successfully completed the merge of Character Creation Stages A,
 - The character creation wizard stages were re-ordered from the original DC20 steps to A-Attributes, B-Ancestry, C-Class, D-Background, E-Review, F-Equipment for a more streamlined digital workflow.
 - A specific dark mode color palette and font (Inter) have been chosen for the UI aesthetics.
 - **Significant Change:** Stages A, B, and C were merged into a single page component (`src/routes/character-creator/+page.svelte`) with a single save API endpoint (`src/routes/api/character/progress/complete/+server.ts`), deviating from the initial stage-by-stage page and API plan.
+- **New Priority:** A comprehensive Vercel migration plan (`projectPlan/cleanVercelMigration.md`) has been adopted to address persistent deployment failures. This plan involves creating a new `dc20-clean` directory and a new GitHub repository, with incremental testing and deployment to Vercel at each phase.
 
 ---
 **Last Updated:** 6/25/2025

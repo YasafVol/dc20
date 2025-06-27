@@ -16,6 +16,8 @@ This document details the technologies, development setup, and technical constra
 ## Development Setup
 
 - Requires Node.js and npm.
+- The recommended way to start a new SvelteKit project is using `npm create svelte@latest my-app`.
+- For reference, the source for `create-svelte` can be found here: https://github.com/sveltejs/kit/tree/main/packages/create-svelte
 - SvelteKit project initialized manually by installing core dependencies (`@sveltejs/kit`, `@sveltejs/adapter-auto`, `@sveltejs/vite-plugin-svelte`, `vite`), creating configuration files (`svelte.config.js`, `vite.config.js`, `src/app.html`), and updating `package.json` (e.g., `"type": "module"`, scripts).
 - TailwindCSS setup integrated using `npx svelte-add@latest tailwindcss`, which configured `tailwind.config.js`, `postcss.config.js`, and `src/app.css`. Core Tailwind dependencies (`tailwindcss`, `postcss`, `autoprefixer`) installed.
 - Melt UI preprocessor (`@melt-ui/pp`) configured in `svelte.config.js` by importing `preprocessMeltUI` and adding it to the `preprocess` array (e.g., `preprocess: sequence([vitePreprocess(), preprocessMeltUI()])`).

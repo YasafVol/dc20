@@ -4,7 +4,7 @@ This document tracks the current work focus, recent changes, and next steps for 
 
 ## Current Work Focus
 
-With the successful merge of Character Creation Stages A, B, and C into a single page and the completion of static rule data population, the current focus is on testing the merged character creation page (`src/routes/character-creator/+page.svelte`) and planning/implementing the subsequent stages (D-F).
+The primary focus has shifted to addressing the Vercel deployment issues. A new, systematic migration plan (`projectPlan/cleanVercelMigration.md`) has been adopted, emphasizing incremental testing and deployment to the production environment at each phase. This ensures that deployment-related problems are identified and resolved early.
 
 ## Recent Changes
 
@@ -24,14 +24,15 @@ With the successful merge of Character Creation Stages A, B, and C into a single
 
 ## Next Steps
 
-1.  Thoroughly test the merged character creation page (`src/routes/character-creator/+page.svelte`) and the unified save API endpoint (`src/routes/api/character/progress/complete/+server.ts`).
-2.  Address any bugs or issues found during testing.
-3.  Detail and implement Stage D (Background) of the character creation process.
-4.  Detail and implement Stage E (Review) of the character creation process.
-5.  Detail and implement Stage F (Equipment) of the character creation process.
-6.  Implement the backend logic for final character calculation and `CharacterSheetData` creation upon completion of Stage F.
-7.  Implement the frontend component for displaying the finalized character sheet.
-8.  Refine UI/UX based on testing and feedback.
+The immediate next steps follow the `cleanVercelMigration.md` plan:
+
+### Phase 1: Baseline Verification (Vercel)
+1.  Create a new SvelteKit skeleton project in a `dc20-clean` directory.
+2.  Install `@sveltejs/adapter-vercel` and configure `svelte.config.js`.
+3.  **Test Point 1: Deploy to Vercel.**
+    *   **Goal:** Confirm the fundamental build process and Vercel adapter are working correctly before adding any of our code.
+
+Subsequent phases (Database Layer, API Logic, UI/Integration) will follow, each with a dedicated Vercel deployment test point.
 
 ## Active Decisions and Considerations
 
@@ -52,7 +53,9 @@ With the successful merge of Character Creation Stages A, B, and C into a single
 
 ## Learnings and Project Insights
 
-The successful merge of Stages A, B, and C into a single page, along with the creation of a unified API, represents a significant architectural shift from the initial stage-by-stage plan. This approach simplifies the user flow and frontend state management for the initial steps. The completion of static rule data population provides the necessary foundation for implementing the remaining stages and backend calculations. Addressing the Melt UI SSR issue (TD-005) remains a priority for improving component library usage and accessibility.
+The successful merge of Stages A, B, and C into a single page, along with the creation of a unified API, represents a significant architectural shift from the initial stage-by-stage plan. This approach simplifies the user flow and frontend state management for the initial steps. The completion of static rule data population provides the necessary foundation for implementing the remaining stages and backend calculations.
+
+The current priority is the Vercel migration. The `cleanVercelMigration.md` plan emphasizes a "clean repository" approach, creating a new `dc20-clean` directory and a new GitHub repository to ensure a fresh start and avoid legacy issues. This strategy is considered the safest and most effective for resolving the persistent deployment failures. Addressing the Melt UI SSR issue (TD-005) will be revisited after the successful Vercel migration.
 
 ---
 **Last Updated:** 6/25/2025

@@ -29,53 +29,49 @@ dc20/
 
 ### Key Dependencies
 - **Framework**: SvelteKit with Vite
-- **Database**: Prisma with PostgreSQL (Prisma Accelerate)
+- **Language**: TypeScript
+- **Database**: PostgreSQL with Drizzle ORM (for base project) and Prisma (for migrated character creator data)
+- **Authentication**: Lucia Auth
 - **UI**: Custom components + Melt UI + Tailwind CSS
-- **Deployment**: Vercel (currently failing)
+- **Testing**: Vitest (Unit Testing), Playwright (E2E Testing)
+- **Deployment**: Vercel (currently failing for original project)
 
 ### Current Issues
 - Permission denied errors with `node_modules/.bin/` executables
 - Build process failing on Vercel despite multiple configuration attempts
 - Inconsistent adapter configuration
 
-## Revised Migration Strategy with Incremental Testing
+## Revised Migration Strategy with Incremental Vercel Testing
 
-This revised strategy incorporates more frequent testing to ensure issues are caught early. This section supersedes the previous "Migration Strategy" and "Migration Checklist" for a more robust, phased approach.
+This revised strategy incorporates frequent Vercel deployments to ensure issues are caught early and directly address the deployment problem.
 
-### Phase 1: Baseline Verification
-1.  Create the new SvelteKit skeleton project.
-2.  Install `@sveltejs/adapter-vercel` and configure `svelte.config.js`.
-3.  **Test Point 1:** Deploy this completely empty project to Vercel.
-    *   **Goal:** Confirm the fundamental build process and Vercel adapter are working correctly before adding any code.
+### Phase 1: Baseline Verification (Vercel) - COMPLETED
+*   **Status**: Confirmed successful deployment to `https://dc20clean.vercel.app/`. The `dc20clean` project is a working SvelteKit skeleton with Vercel adapter configured.
+*   **Goal**: The fundamental build process and Vercel adapter are confirmed to be working correctly.
 
-### Phase 2: Database Layer Verification
-1.  Copy the `prisma` directory and `.env` file.
-2.  Install Prisma dependencies and run `npx prisma generate`.
-3.  Create a temporary `src/routes/api/db-test/+server.ts` endpoint that performs a simple database query.
-4.  **Test Point 2:** Run `npm run dev` and hit the `/api/db-test` endpoint.
-    *   **Goal:** Isolate and confirm that the application can successfully connect to and query the database.
+### Phase 2: Database Layer Verification (Vercel)
+1.  Copy the `prisma` directory and `.env` file to the new project.
+2.  Install Prisma dependencies (`prisma`, `@prisma/client`).
+3.  Run `npx prisma generate`.
+4.  Create a temporary `src/routes/api/db-test/+server.ts` endpoint that performs a simple database query.
+5.  **Test Point 2: Deploy to Vercel.**
+    *   **Goal:** Isolate and confirm that the application can successfully connect to and query the database on the Vercel platform.
 
-### Phase 3: API Logic Verification
+### Phase 3: API Logic Verification (Vercel)
 1.  Copy `src/lib/rulesdata` and `src/lib/stores`.
-2.  Copy the entire `src/routes/api/` directory.
-3.  **Test Point 3:** Run `npm run dev` and test each of the real API endpoints.
-    *   **Goal:** Verify that all backend logic works correctly before introducing the UI.
+2.  Copy the entire `src/routes/api/` directory (excluding the temporary `db-test` route).
+3.  **Test Point 3: Deploy to Vercel.**
+    *   **Goal:** Verify that all backend logic and data dependencies work correctly in the Vercel environment.
 
-### Phase 4: UI and Integration Verification
-1.  Configure `tailwind.config.js` and copy `app.css`, `app.html`.
-2.  Copy `src/lib/components` and `src/routes/test-ui`.
-3.  **Test Point 4 (Component Rendering):** Run `npm run dev` and navigate to the `/test-ui` page.
-    *   **Goal:** Confirm individual UI components render correctly.
-4.  Copy the remaining pages (`character-creator`, etc.).
-5.  **Test Point 5 (Full Local Integration):** Run `npm run dev` and perform a full end-to-end test locally.
-    *   **Goal:** Ensure UI, API, and database work together.
+### Phase 4: UI and Integration Verification (Vercel)
+1.  Configure `tailwind.config.js`, `postcss.config.js` and copy `app.css`, `app.html`.
+2.  Copy `src/lib/components` and all non-API routes (`character-creator`, `test-ui`, etc.).
+3.  **Test Point 4: Deploy to Vercel.**
+    *   **Goal:** Confirm the full application (UI, API, DB) integrates and functions correctly on Vercel.
 
-### Phase 5: Final Production Verification
-1.  **Test Point 6 (Local Production Build):** Run `npm run build` and `npm run preview`.
-    *   **Goal:** Catch any production-only build issues.
-2.  **Test Point 7 (Staging Deployment):** Deploy to a Vercel preview environment (`vercel`).
-    *   **Goal:** Conduct a final end-to-end test on live Vercel infrastructure.
-3.  **Final Step:** Deploy to production with `vercel --prod`.
+### Phase 5: Final Production Deployment
+1.  Conduct a final end-to-end test on the Vercel preview environment.
+2.  Promote the successful deployment to production (`vercel --prod`).
 
 ## Git and Repository Strategy
 
@@ -146,44 +142,4 @@ If migration fails:
 - Test each phase thoroughly before moving to the next
 - Document any deviations from this plan
 - If any phase fails, troubleshoot before continuing
-
----
-
-## Revised Migration Strategy with Incremental Testing
-
-This revised strategy incorporates more frequent testing to ensure issues are caught early. This section supersedes the previous "Migration Strategy" and "Migration Checklist" for a more robust, phased approach.
-
-### Phase 1: Baseline Verification
-1.  Create the new SvelteKit skeleton project.
-2.  Install `@sveltejs/adapter-vercel` and configure `svelte.config.js`.
-3.  **Test Point 1:** Deploy this completely empty project to Vercel.
-    *   **Goal:** Confirm the fundamental build process and Vercel adapter are working correctly before adding any code.
-
-### Phase 2: Database Layer Verification
-1.  Copy the `prisma` directory and `.env` file.
-2.  Install Prisma dependencies and run `npx prisma generate`.
-3.  Create a temporary `src/routes/api/db-test/+server.ts` endpoint that performs a simple database query.
-4.  **Test Point 2:** Run `npm run dev` and hit the `/api/db-test` endpoint.
-    *   **Goal:** Isolate and confirm that the application can successfully connect to and query the database.
-
-### Phase 3: API Logic Verification
-1.  Copy `src/lib/rulesdata` and `src/lib/stores`.
-2.  Copy the entire `src/routes/api/` directory.
-3.  **Test Point 3:** Run `npm run dev` and test each of the real API endpoints.
-    *   **Goal:** Verify that all backend logic works correctly before introducing the UI.
-
-### Phase 4: UI and Integration Verification
-1.  Configure `tailwind.config.js` and copy `app.css`, `app.html`.
-2.  Copy `src/lib/components` and `src/routes/test-ui`.
-3.  **Test Point 4 (Component Rendering):** Run `npm run dev` and navigate to the `/test-ui` page.
-    *   **Goal:** Confirm individual UI components render correctly.
-4.  Copy the remaining pages (`character-creator`, etc.).
-5.  **Test Point 5 (Full Local Integration):** Run `npm run dev` and perform a full end-to-end test locally.
-    *   **Goal:** Ensure UI, API, and database work together.
-
-### Phase 5: Final Production Verification
-1.  **Test Point 6 (Local Production Build):** Run `npm run build` and `npm run preview`.
-    *   **Goal:** Catch any production-only build issues.
-2.  **Test Point 7 (Staging Deployment):** Deploy to a Vercel preview environment (`vercel`).
-    *   **Goal:** Conduct a final end-to-end test on live Vercel infrastructure.
-3.  **Final Step:** Deploy to production with `vercel --prod`.
+- **Important**: The `dc20clean` project uses Drizzle ORM, while the DC20 Character Creator uses Prisma. The migration will involve integrating Prisma for the character creator's database logic within the `dc20clean` environment.
